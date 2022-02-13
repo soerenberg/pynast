@@ -1,6 +1,8 @@
 """Scan stan code."""
 from enum import Enum, auto
-from typing import NamedTuple
+from typing import Any, NamedTuple, List
+
+import error
 
 
 class TokenType(Enum):
@@ -66,8 +68,28 @@ class Scanner:
             self._increase_line()
         elif char in [" ", "\t"]:
             self._add_token(TokenType.SPACE)
+        elif char == "\"":
+            self._scan_string()
         else:
             raise ValueError("Unknown character '{char}'.")
+
+    def _scan_string(self) -> None:
+        while (is_valid_string_literal_char(self._peek())
+               and not self._is_at_end()):
+            self._pop_char()
+
+        if self._is_at_end():
+            error.throw_at(self._line, self._column,
+                           "Unterminated string in file.")
+
+        closing = self._pop_char()
+
+        if closing != "\"":
+            error.throw_at(self._line, self._column,
+                           "Unterminated string in line.")
+
+        literal = self._source[self._start + 1:self._current - 1]
+        self._add_token(TokenType.STRING, literal)
 
     def _add_token(self, ttype: TokenType, literal: Any = None) -> None:
         lexeme = self._source[self._start:self._current]

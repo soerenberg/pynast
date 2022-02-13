@@ -22,11 +22,14 @@ import scanner
         scanner.Token(scanner.TokenType.NEWLINE, 3, 2, "\n"),
         scanner.Token(scanner.TokenType.EOF, 4, 1, ""),
     ]),
-    ("\"abc\"",
-     [scanner.Token(scanner.TokenType.STRING, 1, 1, "\"abc\"", "abc")]),
+    ("\"abc\"", [
+        scanner.Token(scanner.TokenType.STRING, 1, 1, "\"abc\"", "abc"),
+        scanner.Token(scanner.TokenType.EOF, 1, 2, ""),
+    ]),
     (" \"abc\"", [
         scanner.Token(scanner.TokenType.SPACE, 1, 1, " "),
-        scanner.Token(scanner.TokenType.STRING, 1, 2, "\"abc\"", "abc")
+        scanner.Token(scanner.TokenType.STRING, 1, 2, "\"abc\"", "abc"),
+        scanner.Token(scanner.TokenType.EOF, 1, 3, ""),
     ]),
 ])
 def test_scan_source(source, expected_tokens):
