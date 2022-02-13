@@ -39,3 +39,14 @@ def test_scan_source(source, expected_tokens):
 
     # THEN the scanned list of tokens is as expected
     assert lexer._tokens == expected_tokens
+
+
+@pytest.mark.parametrize("char,expected", [(" ", True), ("a", True),
+                                           ("8", True), ("#", True),
+                                           ("\n", False), ("\r", False),
+                                           ("\"", False)])
+def test_is_valid_string_literal(char, expected):
+    """Test scanner.is_valid_string_literal_char."""
+    result = scanner.is_valid_string_literal_char(char)
+
+    assert result == expected

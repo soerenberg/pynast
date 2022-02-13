@@ -108,3 +108,8 @@ class Scanner:
     def _increase_line(self):
         self._line += 1
         self._column = 0
+
+
+def is_valid_string_literal_char(char: str) -> bool:
+    """Return if a char is valid to be used in a string literal."""
+    return char not in ["\"", "\n", "\r"]
