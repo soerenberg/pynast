@@ -10,6 +10,19 @@ class TokenType(Enum):
     NEWLINE = auto()
     SPACE = auto()
 
+    # Punctuation
+    LBRACE = auto()  # {
+    RBRACE = auto()  # }
+    LPAREN = auto()  # (
+    RPAREN = auto()  # )
+    LBRACK = auto()  # [
+    RBRACK = auto()  # ]
+    LABRACK = auto()  # <
+    RABRACK = auto()  # >
+    COMMA = auto()  # ,
+    SEMICOLON = auto()  # ;
+    BAR = auto()  # |
+
     STRING = auto()
 
     IDENTIFIER = auto()
