@@ -99,6 +99,12 @@ class Scanner:
             self._add_token(TokenType.LABRACK)
         elif char == ">":
             self._add_token(TokenType.RABRACK)
+        elif char == ",":
+            self._add_token(TokenType.COMMA)
+        elif char == ";":
+            self._add_token(TokenType.SEMICOLON)
+        elif char == "|":
+            self._add_token(TokenType.BAR)
         else:
             raise ValueError("Unknown character '{char}'.")
 

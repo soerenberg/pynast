@@ -22,6 +22,10 @@ ONE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 2, "")
     ("]", [scanner.Token(scanner.TokenType.RBRACK, 1, 1, "]"), ONE_CHAR_EOF]),
     ("<", [scanner.Token(scanner.TokenType.LABRACK, 1, 1, "<"), ONE_CHAR_EOF]),
     (">", [scanner.Token(scanner.TokenType.RABRACK, 1, 1, ">"), ONE_CHAR_EOF]),
+    (",", [scanner.Token(scanner.TokenType.COMMA, 1, 1, ","), ONE_CHAR_EOF]),
+    (";", [
+        scanner.Token(scanner.TokenType.SEMICOLON, 1, 1, ";"), ONE_CHAR_EOF]),
+    ("|", [scanner.Token(scanner.TokenType.BAR, 1, 1, "|"), ONE_CHAR_EOF]),
     ("\t\n  \n \n", [
         scanner.Token(scanner.TokenType.SPACE, 1, 1, "\t"),
         scanner.Token(scanner.TokenType.NEWLINE, 1, 2, "\n"),
