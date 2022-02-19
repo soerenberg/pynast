@@ -23,6 +23,10 @@ class TokenType(Enum):
     SEMICOLON = auto()  # ;
     BAR = auto()  # |
 
+    EQUALS = auto()  # ==
+
+    ASSIGN = auto()  # =
+
     STRING = auto()
 
     IDENTIFIER = auto()
@@ -105,6 +109,11 @@ class Scanner:
             self._add_token(TokenType.SEMICOLON)
         elif char == "|":
             self._add_token(TokenType.BAR)
+        elif char == "=":
+            if self._match("="):
+                self._add_token(TokenType.EQUALS)
+            else:
+                self._add_token(TokenType.ASSIGN)
         else:
             raise ValueError(f"Unknown character '{char}'.")
 
