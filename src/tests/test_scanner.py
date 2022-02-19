@@ -5,13 +5,23 @@ import scanner
 
 # pylint: disable=protected-access
 
+ONE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 2, "")
 
 @pytest.mark.functional
 @pytest.mark.parametrize("source,expected_tokens", [
-    (" ", [
-        scanner.Token(scanner.TokenType.SPACE, 1, 1, " "),
-        scanner.Token(scanner.TokenType.EOF, 1, 2, "")
+    ("\n", [
+        scanner.Token(scanner.TokenType.NEWLINE, 1, 1, "\n"), 
+        scanner.Token(scanner.TokenType.EOF, 2, 1, ""),
     ]),
+    (" ", [scanner.Token(scanner.TokenType.SPACE, 1, 1, " "), ONE_CHAR_EOF]),
+    ("{", [scanner.Token(scanner.TokenType.LBRACE, 1, 1, "{"), ONE_CHAR_EOF]),
+    ("}", [scanner.Token(scanner.TokenType.RBRACE, 1, 1, "}"), ONE_CHAR_EOF]),
+    ("(", [scanner.Token(scanner.TokenType.LPAREN, 1, 1, "("), ONE_CHAR_EOF]),
+    (")", [scanner.Token(scanner.TokenType.RPAREN, 1, 1, ")"), ONE_CHAR_EOF]),
+    ("[", [scanner.Token(scanner.TokenType.LBRACK, 1, 1, "["), ONE_CHAR_EOF]),
+    ("]", [scanner.Token(scanner.TokenType.RBRACK, 1, 1, "]"), ONE_CHAR_EOF]),
+    ("<", [scanner.Token(scanner.TokenType.LABRACK, 1, 1, "<"), ONE_CHAR_EOF]),
+    (">", [scanner.Token(scanner.TokenType.RABRACK, 1, 1, ">"), ONE_CHAR_EOF]),
     ("\t\n  \n \n", [
         scanner.Token(scanner.TokenType.SPACE, 1, 1, "\t"),
         scanner.Token(scanner.TokenType.NEWLINE, 1, 2, "\n"),

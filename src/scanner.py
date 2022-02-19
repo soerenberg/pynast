@@ -83,6 +83,22 @@ class Scanner:
             self._add_token(TokenType.SPACE)
         elif char == "\"":
             self._scan_string()
+        elif char == "{":
+            self._add_token(TokenType.LBRACE)
+        elif char == "}":
+            self._add_token(TokenType.RBRACE)
+        elif char == "(":
+            self._add_token(TokenType.LPAREN)
+        elif char == ")":
+            self._add_token(TokenType.RPAREN)
+        elif char == "[":
+            self._add_token(TokenType.LBRACK)
+        elif char == "]":
+            self._add_token(TokenType.RBRACK)
+        elif char == "<":
+            self._add_token(TokenType.LABRACK)
+        elif char == ">":
+            self._add_token(TokenType.RABRACK)
         else:
             raise ValueError("Unknown character '{char}'.")
 
