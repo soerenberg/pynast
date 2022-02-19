@@ -106,7 +106,7 @@ class Scanner:
         elif char == "|":
             self._add_token(TokenType.BAR)
         else:
-            raise ValueError("Unknown character '{char}'.")
+            raise ValueError(f"Unknown character '{char}'.")
 
     def _scan_string(self) -> None:
         while (is_valid_string_literal_char(self._peek())
