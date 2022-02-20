@@ -23,7 +23,40 @@ class TokenType(Enum):
     SEMICOLON = auto()  # ;
     BAR = auto()  # |
 
+    # Control flow keywords
+    RETURN = auto()  # return
+    IF = auto()  # if
+    ELSE = auto()  # else
+    WHILE = auto()  # while
+    PROFILE = auto()  # profile
+    FOR = auto()  # for
+    IN = auto()  # in
+    BREAK = auto()  # break
+    CONTINUE = auto()  # continue
+
+    # Operators
+    QMARK = auto()  # ?
+    COLON = auto()  # :
+    BANG = auto()  # !
+    MINUS = auto()  # -
+    PLUS = auto()  # +
+    HAT = auto()  # ^
+    TRANSPOSE = auto()  # '
+    TIMES = auto()  # *
+    DIVIDE = auto()  # /
+    MODULO = auto()  # %
+    IDIVIDE = auto()  # %/%
+    LDIVIDE = auto()  # \
+    ELTTIMES = auto()  # .*
+    ELTPOW = auto()  # .^
+    ELTDIVIDE = auto()  # ./
+    OR = auto()  # ||
+    AND = auto()  # &&
     EQUALS = auto()  # ==
+    NEQUALS = auto()  # !=
+    LEQ = auto()  # <=
+    GEQ = auto()  # >=
+    TILDE = auto()  # ~
 
     ASSIGN = auto()  # =
 
@@ -99,15 +132,68 @@ class Scanner:
         elif char == "]":
             self._add_token(TokenType.RBRACK)
         elif char == "<":
-            self._add_token(TokenType.LABRACK)
+            if self._match("="):
+                self._add_token(TokenType.LEQ)
+            else:
+                self._add_token(TokenType.LABRACK)
         elif char == ">":
-            self._add_token(TokenType.RABRACK)
+            if self._match("="):
+                self._add_token(TokenType.GEQ)
+            else:
+                self._add_token(TokenType.RABRACK)
         elif char == ",":
             self._add_token(TokenType.COMMA)
         elif char == ";":
             self._add_token(TokenType.SEMICOLON)
         elif char == "|":
-            self._add_token(TokenType.BAR)
+            if self._match("|"):
+                self._add_token(TokenType.OR)
+            else:
+                self._add_token(TokenType.BAR)
+        elif char == "?":
+            self._add_token(TokenType.QMARK)
+        elif char == ":":
+            self._add_token(TokenType.COLON)
+        elif char == "-":
+            self._add_token(TokenType.MINUS)
+        elif char == "+":
+            self._add_token(TokenType.PLUS)
+        elif char == "^":
+            self._add_token(TokenType.HAT)
+        elif char == "'":
+            self._add_token(TokenType.TRANSPOSE)
+        elif char == "*":
+            self._add_token(TokenType.TIMES)
+        elif char == "/":
+            self._add_token(TokenType.DIVIDE)
+        elif char == "%":
+            if self._match("/%"):
+                self._add_token(TokenType.IDIVIDE)
+            else:
+                self._add_token(TokenType.MODULO)
+        elif char == "\\":
+            self._add_token(TokenType.LDIVIDE)
+        elif char == ".":
+            if self._match("*"):
+                self._add_token(TokenType.ELTTIMES)
+            elif self._match("^"):
+                self._add_token(TokenType.ELTPOW)
+            elif self._match("/"):
+                self._add_token(TokenType.ELTDIVIDE)
+            else:
+                raise ValueError(f"Unknown character '{char}'.")
+        elif char == "&":
+            if self._match("&"):
+                self._add_token(TokenType.AND)
+            else:
+                raise ValueError(f"Unknown character '{char}'.")
+        elif char == "!":
+            if self._match("="):
+                self._add_token(TokenType.NEQUALS)
+            else:
+                self._add_token(TokenType.BANG)
+        elif char == "~":
+            self._add_token(TokenType.TILDE)
         elif char == "=":
             if self._match("="):
                 self._add_token(TokenType.EQUALS)
@@ -169,6 +255,7 @@ class Scanner:
                 return False
         self._current += len(expected)
         return True
+
 
     def _increase_line(self):
         self._line += 1
