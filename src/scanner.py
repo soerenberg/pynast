@@ -72,9 +72,7 @@ class Scanner:
 
         self._column += self._current - self._start
         self._tokens.append(
-            Token(ttype=TokenType.EOF,
-                  line=self._line,
-                  column=self._column))
+            Token(ttype=TokenType.EOF, line=self._line, column=self._column))
 
         return self._tokens
 
@@ -163,13 +161,13 @@ class Scanner:
         return self._source[self._current + offset]
 
     def _match(self, expected: str) -> bool:
-        if self._is_at_end():
-            return False
+        for i, char in enumerate(expected):
+            if self._is_at_end():
+                return False
 
-        if self._source[self._current] != expected:
-            return False
-
-        self._current += 1
+            if self._source[self._current + i] != char:
+                return False
+        self._current += len(expected)
         return True
 
     def _increase_line(self):
