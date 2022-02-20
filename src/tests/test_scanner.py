@@ -29,7 +29,7 @@ ONE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 2, "")
     ("=", [scanner.Token(scanner.TokenType.ASSIGN, 1, 1, "="), ONE_CHAR_EOF]),
     ("==", [
         scanner.Token(scanner.TokenType.EQUALS, 1, 1, "=="),
-        scanner.Token(scanner.TokenType.EOF, 1, 2, "")]),
+        scanner.Token(scanner.TokenType.EOF, 1, 3, "")]),
     ("\t\n  \n \n", [
         scanner.Token(scanner.TokenType.SPACE, 1, 1, "\t"),
         scanner.Token(scanner.TokenType.NEWLINE, 1, 2, "\n"),
@@ -42,7 +42,7 @@ ONE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 2, "")
     ]),
     ("\"abc\"", [
         scanner.Token(scanner.TokenType.STRING, 1, 1, "\"abc\"", "abc"),
-        scanner.Token(scanner.TokenType.EOF, 1, 2, ""),
+        scanner.Token(scanner.TokenType.EOF, 1, 6, ""),
     ]),
     ("= == =  ==", [
         scanner.Token(scanner.TokenType.ASSIGN, 1, 1, "="),
@@ -53,12 +53,12 @@ ONE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 2, "")
         scanner.Token(scanner.TokenType.SPACE, 1, 7, " "),
         scanner.Token(scanner.TokenType.SPACE, 1, 8, " "),
         scanner.Token(scanner.TokenType.EQUALS, 1, 9, "=="),
-        scanner.Token(scanner.TokenType.EOF, 1, 10, ""),
+        scanner.Token(scanner.TokenType.EOF, 1, 11, ""),
     ]),
     (" \"abc\"", [
         scanner.Token(scanner.TokenType.SPACE, 1, 1, " "),
         scanner.Token(scanner.TokenType.STRING, 1, 2, "\"abc\"", "abc"),
-        scanner.Token(scanner.TokenType.EOF, 1, 3, ""),
+        scanner.Token(scanner.TokenType.EOF, 1, 7, ""),
     ]),
 ])
 def test_scan_source(source, expected_tokens):

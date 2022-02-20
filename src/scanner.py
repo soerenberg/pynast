@@ -70,10 +70,11 @@ class Scanner:
             self._start = self._current
             self._scan_single_token()
 
+        self._column += self._current - self._start
         self._tokens.append(
             Token(ttype=TokenType.EOF,
                   line=self._line,
-                  column=self._column + 1))
+                  column=self._column))
 
         return self._tokens
 
