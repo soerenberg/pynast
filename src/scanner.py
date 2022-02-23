@@ -282,7 +282,6 @@ class Scanner:
         self._current += len(expected)
         return True
 
-
     def _increase_line(self):
         self._line += 1
         self._column = 0

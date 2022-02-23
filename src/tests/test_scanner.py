@@ -9,10 +9,11 @@ ONE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 2, "")
 TWO_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 3, "")
 THREE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 4, "")
 
+
 @pytest.mark.functional
 @pytest.mark.parametrize("source,expected_tokens", [
     ("\n", [
-        scanner.Token(scanner.TokenType.NEWLINE, 1, 1, "\n"), 
+        scanner.Token(scanner.TokenType.NEWLINE, 1, 1, "\n"),
         scanner.Token(scanner.TokenType.EOF, 2, 1, ""),
     ]),
     (" ", [scanner.Token(scanner.TokenType.SPACE, 1, 1, " "), ONE_CHAR_EOF]),
@@ -25,8 +26,8 @@ THREE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 4, "")
     ("<", [scanner.Token(scanner.TokenType.LABRACK, 1, 1, "<"), ONE_CHAR_EOF]),
     (">", [scanner.Token(scanner.TokenType.RABRACK, 1, 1, ">"), ONE_CHAR_EOF]),
     (",", [scanner.Token(scanner.TokenType.COMMA, 1, 1, ","), ONE_CHAR_EOF]),
-    (";", [
-        scanner.Token(scanner.TokenType.SEMICOLON, 1, 1, ";"), ONE_CHAR_EOF]),
+    (";",
+     [scanner.Token(scanner.TokenType.SEMICOLON, 1, 1, ";"), ONE_CHAR_EOF]),
     ("|", [scanner.Token(scanner.TokenType.BAR, 1, 1, "|"), ONE_CHAR_EOF]),
     ("?", [scanner.Token(scanner.TokenType.QMARK, 1, 1, "?"), ONE_CHAR_EOF]),
     (":", [scanner.Token(scanner.TokenType.COLON, 1, 1, ":"), ONE_CHAR_EOF]),
@@ -34,45 +35,50 @@ THREE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 4, "")
     ("-", [scanner.Token(scanner.TokenType.MINUS, 1, 1, "-"), ONE_CHAR_EOF]),
     ("+", [scanner.Token(scanner.TokenType.PLUS, 1, 1, "+"), ONE_CHAR_EOF]),
     ("^", [scanner.Token(scanner.TokenType.HAT, 1, 1, "^"), ONE_CHAR_EOF]),
-    ("'", [scanner.Token(scanner.TokenType.TRANSPOSE, 1, 1, "'"),
-           ONE_CHAR_EOF]),
+    ("'",
+     [scanner.Token(scanner.TokenType.TRANSPOSE, 1, 1, "'"), ONE_CHAR_EOF]),
     ("*", [scanner.Token(scanner.TokenType.TIMES, 1, 1, "*"), ONE_CHAR_EOF]),
     ("/", [scanner.Token(scanner.TokenType.DIVIDE, 1, 1, "/"), ONE_CHAR_EOF]),
     ("%", [scanner.Token(scanner.TokenType.MODULO, 1, 1, "%"), ONE_CHAR_EOF]),
-    ("%/%", [scanner.Token(scanner.TokenType.IDIVIDE, 1, 1, "%/%"),
-             THREE_CHAR_EOF]),
-    ("\\", [scanner.Token(scanner.TokenType.LDIVIDE, 1, 1, "\\"),
-            ONE_CHAR_EOF]),
-    (".*", [scanner.Token(scanner.TokenType.ELTTIMES, 1, 1, ".*"),
-            TWO_CHAR_EOF]),
-    (".^", [scanner.Token(scanner.TokenType.ELTPOW, 1, 1, ".^"), TWO_CHAR_EOF]),
-    ("./", [
-        scanner.Token(scanner.TokenType.ELTDIVIDE, 1, 1, "./"), TWO_CHAR_EOF]),
+    ("%/%",
+     [scanner.Token(scanner.TokenType.IDIVIDE, 1, 1, "%/%"), THREE_CHAR_EOF]),
+    ("\\",
+     [scanner.Token(scanner.TokenType.LDIVIDE, 1, 1, "\\"), ONE_CHAR_EOF]),
+    (".*",
+     [scanner.Token(scanner.TokenType.ELTTIMES, 1, 1, ".*"), TWO_CHAR_EOF]),
+    (".^", [scanner.Token(scanner.TokenType.ELTPOW, 1, 1, ".^"), TWO_CHAR_EOF
+            ]),
+    ("./",
+     [scanner.Token(scanner.TokenType.ELTDIVIDE, 1, 1, "./"), TWO_CHAR_EOF]),
     ("||", [scanner.Token(scanner.TokenType.OR, 1, 1, "||"), TWO_CHAR_EOF]),
     ("&&", [scanner.Token(scanner.TokenType.AND, 1, 1, "&&"), TWO_CHAR_EOF]),
-    ("==", [scanner.Token(scanner.TokenType.EQUALS, 1, 1, "=="),
-            TWO_CHAR_EOF]),
-    ("!=", [scanner.Token(scanner.TokenType.NEQUALS, 1, 1, "!="),
-            TWO_CHAR_EOF]),
+    ("==", [scanner.Token(scanner.TokenType.EQUALS, 1, 1, "=="), TWO_CHAR_EOF
+            ]),
+    ("!=",
+     [scanner.Token(scanner.TokenType.NEQUALS, 1, 1, "!="), TWO_CHAR_EOF]),
     ("<=", [scanner.Token(scanner.TokenType.LEQ, 1, 1, "<="), TWO_CHAR_EOF]),
     (">=", [scanner.Token(scanner.TokenType.GEQ, 1, 1, ">="), TWO_CHAR_EOF]),
     ("~", [scanner.Token(scanner.TokenType.TILDE, 1, 1, "~"), ONE_CHAR_EOF]),
-
     ("=", [scanner.Token(scanner.TokenType.ASSIGN, 1, 1, "="), ONE_CHAR_EOF]),
-    ("+=", [scanner.Token(scanner.TokenType.PLUSASSIGN, 1, 1, "+="),
-            TWO_CHAR_EOF]),
-    ("-=", [scanner.Token(scanner.TokenType.MINUSASSIGN, 1, 1, "-="),
-            TWO_CHAR_EOF]),
-    ("*=", [scanner.Token(scanner.TokenType.TIMESASSIGN, 1, 1, "*="),
-            TWO_CHAR_EOF]),
-    ("/=", [scanner.Token(scanner.TokenType.DIVIDEASSIGN, 1, 1, "/="),
-            TWO_CHAR_EOF]),
-    (".*=", [scanner.Token(scanner.TokenType.ELTTIMESASSIGN, 1, 1, ".*="),
-             THREE_CHAR_EOF]),
-    ("./=", [scanner.Token(scanner.TokenType.ELTDIVIDEASSIGN, 1, 1, "./="),
-             THREE_CHAR_EOF]),
-    ("<-", [scanner.Token(scanner.TokenType.ARROWASSIGN, 1, 1, "<-"),
-            TWO_CHAR_EOF]),
+    ("+=",
+     [scanner.Token(scanner.TokenType.PLUSASSIGN, 1, 1, "+="), TWO_CHAR_EOF]),
+    ("-=",
+     [scanner.Token(scanner.TokenType.MINUSASSIGN, 1, 1, "-="), TWO_CHAR_EOF]),
+    ("*=",
+     [scanner.Token(scanner.TokenType.TIMESASSIGN, 1, 1, "*="), TWO_CHAR_EOF]),
+    ("/=", [
+        scanner.Token(scanner.TokenType.DIVIDEASSIGN, 1, 1, "/="), TWO_CHAR_EOF
+    ]),
+    (".*=", [
+        scanner.Token(scanner.TokenType.ELTTIMESASSIGN, 1, 1, ".*="),
+        THREE_CHAR_EOF
+    ]),
+    ("./=", [
+        scanner.Token(scanner.TokenType.ELTDIVIDEASSIGN, 1, 1, "./="),
+        THREE_CHAR_EOF
+    ]),
+    ("<-",
+     [scanner.Token(scanner.TokenType.ARROWASSIGN, 1, 1, "<-"), TWO_CHAR_EOF]),
     ("\t\n  \n \n", [
         scanner.Token(scanner.TokenType.SPACE, 1, 1, "\t"),
         scanner.Token(scanner.TokenType.NEWLINE, 1, 2, "\n"),
