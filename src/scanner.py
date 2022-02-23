@@ -248,7 +248,7 @@ class Scanner:
 
     def _match(self, expected: str) -> bool:
         for i, char in enumerate(expected):
-            if self._is_at_end():
+            if self._is_at_end(offset=i):
                 return False
 
             if self._source[self._current + i] != char:
