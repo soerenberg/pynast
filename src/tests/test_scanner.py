@@ -3,7 +3,7 @@ import pytest
 
 import scanner
 
-# pylint: disable=protected-access
+# pylint: disable=no-self-use, protected-access, too-few-public-methods
 
 ONE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 2, "")
 TWO_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 3, "")
@@ -120,6 +120,34 @@ def test_scan_source(source, expected_tokens):
 
     # THEN the scanned list of tokens is as expected
     assert lexer._tokens == expected_tokens
+
+
+class TestScanner:
+    """Tests for scanner.Scanner"""
+
+    @pytest.mark.parametrize("source,num_pops,offset,expected", [
+        ("", 0, 0, True),
+        ("", 0, 1, True),
+        ("x", 0, 0, False),
+        ("x", 1, 0, True),
+        ("x", 0, 1, True),
+        ("abcde", 3, 1, False),
+        ("abcde", 3, 2, True),
+    ])
+    def test_is_at_end(self, source, num_pops, offset, expected):
+        """Test _is_at_end."""
+        # GIVEN a Scanner instance...
+        scnnr = scanner.Scanner(source)
+
+        # ... where `num_pops` characters have been advanced
+        for _ in range(num_pops):
+            scnnr._pop_char()
+
+        # WHEN _is_at_end is called
+        result = scnnr._is_at_end(offset)
+
+        # THEN the result is as expected
+        assert result == expected
 
 
 @pytest.mark.parametrize("char,expected", [(" ", True), ("a", True),
