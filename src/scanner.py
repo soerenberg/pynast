@@ -58,7 +58,15 @@ class TokenType(Enum):
     GEQ = auto()  # >=
     TILDE = auto()  # ~
 
+    # Assignments
     ASSIGN = auto()  # =
+    PLUSASSIGN = auto()  # +=
+    MINUSASSIGN = auto()  # -=
+    TIMESASSIGN = auto()  # *=
+    DIVIDEASSIGN = auto()  # /=
+    ELTTIMESASSIGN = auto()  # .*=
+    ELTDIVIDEASSIGN = auto()  # ./=
+    ARROWASSIGN = auto()  # <-
 
     STRING = auto()
 
@@ -134,6 +142,8 @@ class Scanner:
         elif char == "<":
             if self._match("="):
                 self._add_token(TokenType.LEQ)
+            elif self._match("-"):
+                self._add_token(TokenType.ARROWASSIGN)
             else:
                 self._add_token(TokenType.LABRACK)
         elif char == ">":
@@ -155,17 +165,29 @@ class Scanner:
         elif char == ":":
             self._add_token(TokenType.COLON)
         elif char == "-":
-            self._add_token(TokenType.MINUS)
+            if self._match("="):
+                self._add_token(TokenType.MINUSASSIGN)
+            else:
+                self._add_token(TokenType.MINUS)
         elif char == "+":
-            self._add_token(TokenType.PLUS)
+            if self._match("="):
+                self._add_token(TokenType.PLUSASSIGN)
+            else:
+                self._add_token(TokenType.PLUS)
         elif char == "^":
             self._add_token(TokenType.HAT)
         elif char == "'":
             self._add_token(TokenType.TRANSPOSE)
         elif char == "*":
-            self._add_token(TokenType.TIMES)
+            if self._match("="):
+                self._add_token(TokenType.TIMESASSIGN)
+            else:
+                self._add_token(TokenType.TIMES)
         elif char == "/":
-            self._add_token(TokenType.DIVIDE)
+            if self._match("="):
+                self._add_token(TokenType.DIVIDEASSIGN)
+            else:
+                self._add_token(TokenType.DIVIDE)
         elif char == "%":
             if self._match("/%"):
                 self._add_token(TokenType.IDIVIDE)
@@ -174,7 +196,11 @@ class Scanner:
         elif char == "\\":
             self._add_token(TokenType.LDIVIDE)
         elif char == ".":
-            if self._match("*"):
+            if self._match("*="):
+                self._add_token(TokenType.ELTTIMESASSIGN)
+            elif self._match("/="):
+                self._add_token(TokenType.ELTDIVIDEASSIGN)
+            elif self._match("*"):
                 self._add_token(TokenType.ELTTIMES)
             elif self._match("^"):
                 self._add_token(TokenType.ELTPOW)
