@@ -230,8 +230,8 @@ class Scanner:
                   line=self._line,
                   column=self._column))
 
-    def _is_at_end(self) -> bool:
-        return self._current >= len(self._source)
+    def _is_at_end(self, offset: int = 0) -> bool:
+        return self._current + offset >= len(self._source)
 
     def _pop_char(self) -> str:
         """Advance by a single character."""
