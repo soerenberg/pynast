@@ -52,6 +52,12 @@ class TokenType(Enum):
     CORRMATRIX = auto()  # corr_matrix
     COVMATRIX = auto()  # cov_matrix
 
+    # Transformation keywords
+    LOWER = auto()  # lower
+    UPPER = auto()  # upper
+    OFFSET = auto()  # offset
+    MULTIPLIER = auto()  # multiplier
+
     # Operators
     QMARK = auto()  # ?
     COLON = auto()  # :
@@ -137,6 +143,10 @@ STAN_KEYWORDS = {
     "cholesky_factor_cov": TokenType.CHOLESKYFACTORCOV,
     "corr_matrix": TokenType.CORRMATRIX,
     "cov_matrix": TokenType.COVMATRIX,
+    "lower": TokenType.LOWER,
+    "upper": TokenType.UPPER,
+    "offset": TokenType.OFFSET,
+    "multiplier": TokenType.MULTIPLIER,
 }
 
 class Scanner:

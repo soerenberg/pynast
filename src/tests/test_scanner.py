@@ -149,6 +149,10 @@ def test_scan_source(source, expected_tokens):
     ("cholesky_factor_cov", scanner.TokenType.CHOLESKYFACTORCOV),
     ("corr_matrix", scanner.TokenType.CORRMATRIX),
     ("cov_matrix", scanner.TokenType.COVMATRIX),
+    ("lower", scanner.TokenType.LOWER),
+    ("upper", scanner.TokenType.UPPER),
+    ("offset", scanner.TokenType.OFFSET),
+    ("multiplier", scanner.TokenType.MULTIPLIER),
 ])
 def test_scan_source_keyword(keyword, token_type):
     """Simple functional test for scanning reserved keywords.
