@@ -225,7 +225,7 @@ def test_is_valid_string_literal(char, expected):
     ("a", False, True),
     ("u", True, True),
     ("u", False, True),
-    ("_", True, True),
+    ("_", True, False),
     ("_", False, True),
     (" ", True, False),
     (" ", False, False),

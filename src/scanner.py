@@ -401,6 +401,6 @@ def is_identifier_char(char: str, is_first_char: bool) -> bool:
     Returns:
         bool: True if `char` is valid, False otherwise.
     """
-    if is_first_char and char.isdigit():
+    if is_first_char and (char.isdigit() or char == "_"):
         return False
     return char.isalpha() or char.isdigit() or char == "_"
