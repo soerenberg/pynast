@@ -92,6 +92,19 @@ class Token(NamedTuple):
     literal: Any = None
 
 
+# Reserved keywords mapped to corresponding token type
+STAN_KEYWORDS = {
+    "return": TokenType.RETURN,
+    "if": TokenType.IF,
+    "else": TokenType.ELSE,
+    "while": TokenType.WHILE,
+    "profile": TokenType.PROFILE,
+    "for": TokenType.FOR,
+    "in": TokenType.IN,
+    "break": TokenType.BREAK,
+    "continue": TokenType.CONTINUE,
+}
+
 class Scanner:
     """Scanner for Stan."""
 
@@ -226,7 +239,19 @@ class Scanner:
             else:
                 self._add_token(TokenType.ASSIGN)
         else:
-            raise ValueError(f"Unknown character '{char}'.")
+            if is_identifier_char(char, is_first_char=True):
+                self._scan_identifier()
+            else:
+                raise ValueError(f"Unknown character '{char}'.")
+
+    def _scan_identifier(self) -> None:
+        while is_identifier_char(self._peek(), is_first_char=False):
+            self._pop_char()
+
+        text = self._source[self._start:self._current]
+
+        token_type = STAN_KEYWORDS[text]
+        self._add_token(token_type)
 
     def _scan_string(self) -> None:
         while (is_valid_string_literal_char(self._peek())

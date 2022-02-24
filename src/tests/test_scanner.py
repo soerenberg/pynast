@@ -122,6 +122,38 @@ def test_scan_source(source, expected_tokens):
     assert lexer._tokens == expected_tokens
 
 
+@pytest.mark.functional
+@pytest.mark.parametrize("keyword,token_type", [
+    ("return", scanner.TokenType.RETURN),
+    ("if", scanner.TokenType.IF),
+    ("else", scanner.TokenType.ELSE),
+    ("while", scanner.TokenType.WHILE),
+    ("profile", scanner.TokenType.PROFILE),
+    ("for", scanner.TokenType.FOR),
+    ("in", scanner.TokenType.IN),
+    ("break", scanner.TokenType.BREAK),
+    ("continue", scanner.TokenType.CONTINUE),
+])
+def test_scan_source_keyword(keyword, token_type):
+    """Simple functional test for scanning reserved keywords.
+
+    This test is similar to `test_scan_source` but simplifies the setup
+    slightly for reserved keywords.
+    """
+    source = keyword
+    eof_token = scanner.Token(scanner.TokenType.EOF, 1, len(keyword) + 1, "")
+    expected_tokens = [scanner.Token(token_type, 1, 1, keyword), eof_token]
+
+    # GIVEN a source code and a Scanner instance
+    lexer = scanner.Scanner(source)
+
+    # WHEN tokens are scanned
+    lexer.scan_tokens()
+
+    # THEN the scanned list of tokens is as expected
+    assert lexer._tokens == expected_tokens
+
+
 class TestScanner:
     """Tests for scanner.Scanner"""
 
