@@ -291,7 +291,7 @@ class Scanner:
     def _scan_identifier(self) -> None:
         self._scan_while_char()
 
-        text = self._source[self._start:self._current]
+        text = self._get_start_to_current()
 
         token_type = STAN_KEYWORDS[text]
         self._add_token(token_type)
@@ -299,6 +299,9 @@ class Scanner:
     def _scan_while_char(self):
         while is_identifier_char(self._peek(), is_first_char=False):
             self._pop_char()
+
+    def _get_start_to_current(self):
+        return self._source[self._start:self._current]
 
     def _scan_string(self) -> None:
         while (is_valid_string_literal_char(self._peek())
