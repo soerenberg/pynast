@@ -289,13 +289,16 @@ class Scanner:
                 raise ValueError(f"Unknown character '{char}'.")
 
     def _scan_identifier(self) -> None:
-        while is_identifier_char(self._peek(), is_first_char=False):
-            self._pop_char()
+        self._scan_while_char()
 
         text = self._source[self._start:self._current]
 
         token_type = STAN_KEYWORDS[text]
         self._add_token(token_type)
+
+    def _scan_while_char(self):
+        while is_identifier_char(self._peek(), is_first_char=False):
+            self._pop_char()
 
     def _scan_string(self) -> None:
         while (is_valid_string_literal_char(self._peek())
