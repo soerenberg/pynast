@@ -160,6 +160,9 @@ def test_scan_source(source, expected_tokens):
     ("upper", scanner.TokenType.UPPER),
     ("offset", scanner.TokenType.OFFSET),
     ("multiplier", scanner.TokenType.MULTIPLIER),
+    ("identifiername", scanner.TokenType.IDENTIFIER),
+    ("identifier_name", scanner.TokenType.IDENTIFIER),
+    ("identifier_name", scanner.TokenType.IDENTIFIER),
 ])
 def test_scan_source_keyword(keyword, token_type):
     """Simple functional test for scanning reserved keywords.

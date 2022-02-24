@@ -316,7 +316,10 @@ class Scanner:
             self._scan_while_char()
             text = self._get_start_to_current()
 
-        token_type = STAN_KEYWORDS[text]
+        token_type = TokenType.IDENTIFIER
+        if text in STAN_KEYWORDS:
+            token_type = STAN_KEYWORDS[text]
+
         self._add_token(token_type)
 
     def _scan_while_char(self):
