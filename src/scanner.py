@@ -10,6 +10,15 @@ class TokenType(Enum):
     NEWLINE = auto()
     SPACE = auto()
 
+    # Program blocks
+    FUNCTIONBLOCK = auto()  # functions
+    DATABLOCK = auto()  # data
+    TRANSFORMEDDATABLOCK = auto()  # transformed data
+    PARAMETERSBLOCK = auto()  # parameters
+    TRANSFORMEDPARAMETERSBLOCK = auto()  # transformed parameters
+    MODELBLOCK = auto()  # model
+    GENERATEDQUANTITIESBLOCK = auto()  # generated quantities
+
     # Punctuation
     LBRACE = auto()  # {
     RBRACE = auto()  # }
@@ -118,6 +127,13 @@ class Token(NamedTuple):
 
 # Reserved keywords mapped to corresponding token type
 STAN_KEYWORDS = {
+    "functions": TokenType.FUNCTIONBLOCK,
+    "data": TokenType.DATABLOCK,
+    "transformed data": TokenType.TRANSFORMEDDATABLOCK,
+    "parameters": TokenType.PARAMETERSBLOCK,
+    "transformed parameters": TokenType.TRANSFORMEDPARAMETERSBLOCK,
+    "model": TokenType.MODELBLOCK,
+    "generated quantities": TokenType.GENERATEDQUANTITIESBLOCK,
     "return": TokenType.RETURN,
     "if": TokenType.IF,
     "else": TokenType.ELSE,
@@ -148,6 +164,7 @@ STAN_KEYWORDS = {
     "offset": TokenType.OFFSET,
     "multiplier": TokenType.MULTIPLIER,
 }
+
 
 class Scanner:
     """Scanner for Stan."""
@@ -292,6 +309,12 @@ class Scanner:
         self._scan_while_char()
 
         text = self._get_start_to_current()
+
+        # Special case: reserved keywords containing white spaces
+        if text in {kw.split(" ")[0] for kw in STAN_KEYWORDS if " " in kw}:
+            self._pop_char()  # advance single whitespace
+            self._scan_while_char()
+            text = self._get_start_to_current()
 
         token_type = STAN_KEYWORDS[text]
         self._add_token(token_type)

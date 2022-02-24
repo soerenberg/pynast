@@ -124,6 +124,13 @@ def test_scan_source(source, expected_tokens):
 
 @pytest.mark.functional
 @pytest.mark.parametrize("keyword,token_type", [
+    ("functions", scanner.TokenType.FUNCTIONBLOCK),
+    ("data", scanner.TokenType.DATABLOCK),
+    ("transformed data", scanner.TokenType.TRANSFORMEDDATABLOCK),
+    ("parameters", scanner.TokenType.PARAMETERSBLOCK),
+    ("transformed parameters", scanner.TokenType.TRANSFORMEDPARAMETERSBLOCK),
+    ("model", scanner.TokenType.MODELBLOCK),
+    ("generated quantities", scanner.TokenType.GENERATEDQUANTITIESBLOCK),
     ("return", scanner.TokenType.RETURN),
     ("if", scanner.TokenType.IF),
     ("else", scanner.TokenType.ELSE),
