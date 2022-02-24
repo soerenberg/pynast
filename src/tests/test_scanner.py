@@ -159,3 +159,22 @@ def test_is_valid_string_literal(char, expected):
     result = scanner.is_valid_string_literal_char(char)
 
     assert result == expected
+
+
+@pytest.mark.parametrize("char,is_first_char,expected", [
+    ("a", True, True),
+    ("a", False, True),
+    ("u", True, True),
+    ("u", False, True),
+    ("_", True, True),
+    ("_", False, True),
+    (" ", True, False),
+    (" ", False, False),
+    ("2", True, False),
+    ("2", False, True),
+])
+def test_is_identifier_char(char, is_first_char, expected):
+    """Test scanner.is_identifier_char."""
+    result = scanner.is_identifier_char(char, is_first_char)
+
+    assert result == expected

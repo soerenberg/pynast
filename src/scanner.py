@@ -290,3 +290,19 @@ class Scanner:
 def is_valid_string_literal_char(char: str) -> bool:
     """Return if a char is valid to be used in a string literal."""
     return char not in ["\"", "\n", "\r"]
+
+
+def is_identifier_char(char: str, is_first_char: bool) -> bool:
+    """Returns if character is a valid char for an identifier.
+
+    Args:
+        char: character (string of length 1)
+        is_first_char: whether `char` is supposed to be the first character of
+            the identifier.
+
+    Returns:
+        bool: True if `char` is valid, False otherwise.
+    """
+    if is_first_char and char.isdigit():
+        return False
+    return char.isalpha() or char.isdigit() or char == "_"
