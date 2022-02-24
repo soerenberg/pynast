@@ -34,6 +34,24 @@ class TokenType(Enum):
     BREAK = auto()  # break
     CONTINUE = auto()  # continue
 
+    # Types
+    VOID = auto()  # void
+    INT = auto()  # int
+    REAL = auto()  # real
+    COMPLEX = auto()  # complex
+    VECTOR = auto()  # vector
+    ROWVECTOR = auto()  # row_vector
+    ARRAY = auto()  # array
+    MATRIX = auto()  # matrix
+    ORDERED = auto()  # ordered
+    POSITIVEORDERED = auto()  # positive_ordered
+    SIMPLEX = auto()  # simplex
+    UNITVECTOR = auto()  # unit_vector
+    CHOLESKYFACTORCORR = auto()  # cholesky_factor_corr
+    CHOLESKYFACTORCOV = auto()  # cholesky_factor_cov
+    CORRMATRIX = auto()  # corr_matrix
+    COVMATRIX = auto()  # cov_matrix
+
     # Operators
     QMARK = auto()  # ?
     COLON = auto()  # :
@@ -103,6 +121,22 @@ STAN_KEYWORDS = {
     "in": TokenType.IN,
     "break": TokenType.BREAK,
     "continue": TokenType.CONTINUE,
+    "void": TokenType.VOID,
+    "int": TokenType.INT,
+    "real": TokenType.REAL,
+    "complex": TokenType.COMPLEX,
+    "vector": TokenType.VECTOR,
+    "row_vector": TokenType.ROWVECTOR,
+    "array": TokenType.ARRAY,
+    "matrix": TokenType.MATRIX,
+    "ordered": TokenType.ORDERED,
+    "positive_ordered": TokenType.POSITIVEORDERED,
+    "simplex": TokenType.SIMPLEX,
+    "unit_vector": TokenType.UNITVECTOR,
+    "cholesky_factor_corr": TokenType.CHOLESKYFACTORCORR,
+    "cholesky_factor_cov": TokenType.CHOLESKYFACTORCOV,
+    "corr_matrix": TokenType.CORRMATRIX,
+    "cov_matrix": TokenType.COVMATRIX,
 }
 
 class Scanner:

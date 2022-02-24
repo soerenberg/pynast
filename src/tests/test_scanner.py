@@ -133,6 +133,22 @@ def test_scan_source(source, expected_tokens):
     ("in", scanner.TokenType.IN),
     ("break", scanner.TokenType.BREAK),
     ("continue", scanner.TokenType.CONTINUE),
+    ("void", scanner.TokenType.VOID),
+    ("int", scanner.TokenType.INT),
+    ("real", scanner.TokenType.REAL),
+    ("complex", scanner.TokenType.COMPLEX),
+    ("vector", scanner.TokenType.VECTOR),
+    ("row_vector", scanner.TokenType.ROWVECTOR),
+    ("array", scanner.TokenType.ARRAY),
+    ("matrix", scanner.TokenType.MATRIX),
+    ("ordered", scanner.TokenType.ORDERED),
+    ("positive_ordered", scanner.TokenType.POSITIVEORDERED),
+    ("simplex", scanner.TokenType.SIMPLEX),
+    ("unit_vector", scanner.TokenType.UNITVECTOR),
+    ("cholesky_factor_corr", scanner.TokenType.CHOLESKYFACTORCORR),
+    ("cholesky_factor_cov", scanner.TokenType.CHOLESKYFACTORCOV),
+    ("corr_matrix", scanner.TokenType.CORRMATRIX),
+    ("cov_matrix", scanner.TokenType.COVMATRIX),
 ])
 def test_scan_source_keyword(keyword, token_type):
     """Simple functional test for scanning reserved keywords.
