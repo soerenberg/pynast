@@ -102,6 +102,7 @@ class TokenType(Enum):
     ARROWASSIGN = auto()  # <-
 
     STRING = auto()
+    INTNUMERAL = auto()
 
     IDENTIFIER = auto()
 
@@ -300,7 +301,9 @@ class Scanner:
             else:
                 self._add_token(TokenType.ASSIGN)
         else:
-            if is_identifier_char(char, is_first_char=True):
+            if char.isdigit():
+                self._scan_number()
+            elif is_identifier_char(char, is_first_char=True):
                 self._scan_identifier()
             else:
                 raise ValueError(f"Unknown character '{char}'.")
@@ -346,6 +349,13 @@ class Scanner:
 
         literal = self._source[self._start + 1:self._current - 1]
         self._add_token(TokenType.STRING, literal)
+
+    def _scan_number(self) -> None:
+        while self._peek().isdigit():
+            self._pop_char()
+
+        literal = self._get_start_to_current()
+        self._add_token(TokenType.INTNUMERAL, int(literal))
 
     def _add_token(self, ttype: TokenType, literal: Any = None) -> None:
         lexeme = self._source[self._start:self._current]
