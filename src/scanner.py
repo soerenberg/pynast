@@ -259,7 +259,9 @@ class Scanner:
             else:
                 self._add_token(TokenType.TIMES)
         elif char == "/":
-            if self._match("="):
+            if self._match("/"):
+                self._scan_one_line_comment()
+            elif self._match("="):
                 self._add_token(TokenType.DIVIDEASSIGN)
             else:
                 self._add_token(TokenType.DIVIDE)
@@ -327,6 +329,11 @@ class Scanner:
 
     def _scan_while_char(self):
         while is_identifier_char(self._peek(), is_first_char=False):
+            self._pop_char()
+
+    def _scan_one_line_comment(self) -> None:
+        """ Scan until EOF or newline is encountered."""
+        while not self._is_at_end() and self._peek() != "\n":
             self._pop_char()
 
     def _get_start_to_current(self):

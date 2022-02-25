@@ -78,12 +78,16 @@ THREE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 4, "")
     ]),
     ("<-",
      [scanner.Token(scanner.TokenType.ARROWASSIGN, 1, 1, "<-"), TWO_CHAR_EOF]),
-    ("\t\n  \n \n", [
+    ("\t\n  // a comment \n \n", [
         scanner.Token(scanner.TokenType.EOF, 4, 1, ""),
     ]),
     ("\"abc\"", [
         scanner.Token(scanner.TokenType.STRING, 1, 1, "\"abc\"", "abc"),
         scanner.Token(scanner.TokenType.EOF, 1, 6, ""),
+    ]),
+    ("\"ab c\"  // another comment", [
+        scanner.Token(scanner.TokenType.STRING, 1, 1, "\"ab c\"", "ab c"),
+        scanner.Token(scanner.TokenType.EOF, 1, 27, ""),
     ]),
     ("= == =  ==", [
         scanner.Token(scanner.TokenType.ASSIGN, 1, 1, "="),
@@ -95,6 +99,12 @@ THREE_CHAR_EOF = scanner.Token(scanner.TokenType.EOF, 1, 4, "")
     (" \"abc\"", [
         scanner.Token(scanner.TokenType.STRING, 1, 2, "\"abc\"", "abc"),
         scanner.Token(scanner.TokenType.EOF, 1, 7, ""),
+    ]),
+    ("model \n {// some comment\n}", [
+        scanner.Token(scanner.TokenType.MODELBLOCK, 1, 1, "model"),
+        scanner.Token(scanner.TokenType.LBRACE, 2, 2, "{"),
+        scanner.Token(scanner.TokenType.RBRACE, 3, 1, "}"),
+        scanner.Token(scanner.TokenType.EOF, 3, 2, ""),
     ]),
 ])
 def test_scan_source(source, expected_tokens):
