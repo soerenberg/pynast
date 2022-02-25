@@ -196,10 +196,10 @@ class Scanner:
         char = self._pop_char()
 
         if char == "\n":
-            self._add_token(TokenType.NEWLINE)
             self._increase_line()
+            return
         elif char in [" ", "\t"]:
-            self._add_token(TokenType.SPACE)
+            return
         elif char == "\"":
             self._scan_string()
         elif char == "{":
