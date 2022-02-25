@@ -102,6 +102,11 @@ class TokenType(Enum):
     ARROWASSIGN = auto()  # <-
     INCREMENTLOGPROB = auto()  # increment_log_prob
 
+    # Effects
+    PRINT = auto()  # print
+    REJECT = auto()  # reject
+    TRUNCATE = auto()  # T (note: this needs context)
+
     STRING = auto()
     INTNUMERAL = auto()
 
@@ -166,6 +171,8 @@ STAN_KEYWORDS = {
     "offset": TokenType.OFFSET,
     "multiplier": TokenType.MULTIPLIER,
     "increment_log_prob": TokenType.INCREMENTLOGPROB,
+    "print": TokenType.PRINT,
+    "reject": TokenType.REJECT,
 }
 
 
