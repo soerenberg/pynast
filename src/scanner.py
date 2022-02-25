@@ -100,6 +100,7 @@ class TokenType(Enum):
     ELTTIMESASSIGN = auto()  # .*=
     ELTDIVIDEASSIGN = auto()  # ./=
     ARROWASSIGN = auto()  # <-
+    INCREMENTLOGPROB = auto()  # increment_log_prob
 
     STRING = auto()
     INTNUMERAL = auto()
@@ -164,6 +165,7 @@ STAN_KEYWORDS = {
     "upper": TokenType.UPPER,
     "offset": TokenType.OFFSET,
     "multiplier": TokenType.MULTIPLIER,
+    "increment_log_prob": TokenType.INCREMENTLOGPROB,
 }
 
 

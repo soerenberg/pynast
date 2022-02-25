@@ -157,6 +157,7 @@ def test_scan_source(source, expected_tokens):
     ("upper", scanner.TokenType.UPPER),
     ("offset", scanner.TokenType.OFFSET),
     ("multiplier", scanner.TokenType.MULTIPLIER),
+    ("increment_log_prob", scanner.TokenType.INCREMENTLOGPROB),
     ("identifiername", scanner.TokenType.IDENTIFIER),
     ("identifier_name", scanner.TokenType.IDENTIFIER),
     ("identifier_name", scanner.TokenType.IDENTIFIER),
