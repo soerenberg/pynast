@@ -71,3 +71,44 @@ def test_eight_schools():
     result = parser.parse()
 
     print(result)
+
+
+def test_all_blocks():
+    """Test program with all blocks."""
+    code = """
+    functions {
+      real relative_diff(real x, real y) {
+        real abs_diff;
+        real avg_scale;
+        abs_diff = fabs(x - y);
+        avg_scale = (fabs(x) + fabs(y)) / 2;
+        return abs_diff / avg_scale;
+      }
+    }
+    data {
+        int M;
+        real x[M];
+    }
+    tranformed data {
+        int M_squared;
+        int x_squared;
+
+        M_squared = M^2;
+        x_squared = x.^2;
+    }
+    parameters {
+        real a;
+        real b;
+    }
+    transformed parameters {
+        real ab = a * b;
+    }
+    model {
+        a ~ normal(0, 2);
+        b ~ normal(2, 2);
+    }
+    generated quantities {
+      real rdiff;
+      rdiff = relative_diff(alpha, beta);
+    }
+    """
