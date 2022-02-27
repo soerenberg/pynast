@@ -107,6 +107,7 @@ class TokenType(Enum):
 
     STRING = auto()
     INTNUMERAL = auto()
+    REALNUMERAL = auto()
 
     IDENTIFIER = auto()
 
