@@ -218,7 +218,10 @@ class Scanner:
             self._pop_char()
 
     def _get_start_to_current(self):
-        return self._source[self._start:self._current]
+        return self._get_to_current(self._start)
+
+    def _get_to_current(self, position: int) -> str:
+        return self._source[position:self._current]
 
     def _scan_string(self) -> None:
         while (is_valid_string_literal_char(self._peek())
