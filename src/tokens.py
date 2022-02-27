@@ -128,3 +128,10 @@ class Token(NamedTuple):
     column: int
     lexeme: str = ""
     literal: Any = None
+
+
+class RealValue(NamedTuple):
+    """Datatype for parsed real literals."""
+    integer_part: int
+    non_integer_part: int
+    exponent: int
