@@ -2,7 +2,7 @@
 import pytest
 
 import scanner
-from tokens import Token, TokenType, RealValue
+from tokens import Token, TokenType, ComplexValue, RealValue
 
 # pylint: disable=no-self-use, protected-access, too-few-public-methods
 
@@ -172,6 +172,9 @@ def test_scan_source_keyword(keyword, token_type):
     ("1.3", TokenType.REALNUMERAL, RealValue(1, 3, 1)),
     ("10.4e2", TokenType.REALNUMERAL, RealValue(10, 4, 2)),
     ("10.42E12", TokenType.REALNUMERAL, RealValue(10, 42, 12)),
+    ("123i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(123, 0, 1))),
+    ("1.3i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(1, 3, 1))),
+    ("10.4e2i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(10, 4, 2))),
 ])
 def test_scan_literal(keyword, token_type, literal):
     """Simple functional test for scanning reserved keywords.

@@ -108,6 +108,7 @@ class TokenType(Enum):
     STRING = auto()
     INTNUMERAL = auto()
     REALNUMERAL = auto()
+    IMAGNUMERAL = auto()
 
     IDENTIFIER = auto()
 
@@ -136,3 +137,8 @@ class RealValue(NamedTuple):
     integer_part: int
     non_integer_part: int
     exponent: int
+
+
+class ComplexValue(NamedTuple):
+    """Datatype for parsed imaginary literals."""
+    imag: RealValue

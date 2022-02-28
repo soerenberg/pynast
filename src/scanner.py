@@ -2,7 +2,7 @@
 from typing import Any, List
 
 import error
-from tokens import Token, TokenType, RealValue
+from tokens import Token, TokenType, ComplexValue, RealValue
 
 # Reserved keywords mapped to corresponding token type
 STAN_KEYWORDS = {
@@ -251,6 +251,11 @@ class Scanner:
 
         literal = self._get_start_to_current()
 
+        if self._match("i"):
+            self._add_token(TokenType.IMAGNUMERAL,
+                            ComplexValue(RealValue(int(literal), 0, 1)))
+            return
+
         self._add_token(TokenType.INTNUMERAL, int(literal))
 
     def _scan_real_literal(self):
@@ -291,6 +296,13 @@ class Scanner:
             # TODO convert to int with informative error message
             exponent = exponent_sign * int(
                 self._get_to_current(exponent_start))
+
+        if self._match("i"):
+            self._add_token(
+                TokenType.IMAGNUMERAL,
+                ComplexValue(
+                    RealValue(integer_part, non_integer_part, exponent)))
+            return
 
         self._add_token(TokenType.REALNUMERAL,
                         RealValue(integer_part, non_integer_part, exponent))
