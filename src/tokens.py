@@ -107,6 +107,8 @@ class TokenType(Enum):
 
     STRING = auto()
     INTNUMERAL = auto()
+    REALNUMERAL = auto()
+    IMAGNUMERAL = auto()
 
     IDENTIFIER = auto()
 
@@ -128,3 +130,15 @@ class Token(NamedTuple):
     column: int
     lexeme: str = ""
     literal: Any = None
+
+
+class RealValue(NamedTuple):
+    """Datatype for parsed real literals."""
+    integer_part: int
+    non_integer_part: int
+    exponent: int
+
+
+class ComplexValue(NamedTuple):
+    """Datatype for parsed imaginary literals."""
+    imag: RealValue

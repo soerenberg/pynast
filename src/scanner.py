@@ -2,7 +2,7 @@
 from typing import Any, List
 
 import error
-from tokens import Token, TokenType
+from tokens import Token, TokenType, ComplexValue, RealValue
 
 # Reserved keywords mapped to corresponding token type
 STAN_KEYWORDS = {
@@ -218,7 +218,10 @@ class Scanner:
             self._pop_char()
 
     def _get_start_to_current(self):
-        return self._source[self._start:self._current]
+        return self._get_to_current(self._start)
+
+    def _get_to_current(self, position: int) -> str:
+        return self._source[position:self._current]
 
     def _scan_string(self) -> None:
         while (is_valid_string_literal_char(self._peek())
@@ -242,8 +245,67 @@ class Scanner:
         while self._peek().isdigit():
             self._pop_char()
 
+        if self._peek() in [".", "e", "E"]:
+            self._scan_real_literal()
+            return
+
         literal = self._get_start_to_current()
+
+        if self._match("i"):
+            self._add_token(TokenType.IMAGNUMERAL,
+                            ComplexValue(RealValue(int(literal), 0, 1)))
+            return
+
         self._add_token(TokenType.INTNUMERAL, int(literal))
+
+    def _scan_real_literal(self):
+        """Assume that the integer part has already been scanned."""
+        # TODO convert to int with informative error message
+        integer_part = int(self._get_start_to_current())
+
+        non_integer_part = 0
+        if self._match("."):
+            non_integer_start = self._current
+
+            if not self._peek().isdigit():
+                raise ValueError("Expect integer after '.'.")
+            while self._peek().isdigit():
+                self._pop_char()
+
+            # TODO convert to int with informative error message
+            non_integer_part = int(self._get_to_current(non_integer_start))
+
+        exponent = 1
+        if self._peek() in ["e", "E"]:
+            exponent_char = self._pop_char()
+            # exp_literal
+            exponent_sign = +1
+            if self._match("-"):
+                exponent_sign = -1
+            else:
+                self._match("+")
+
+            if not self._peek().isdigit():
+                raise ValueError(
+                    f"Expect integer exponent after {exponent_char}.")
+
+            exponent_start = self._current
+            while self._peek().isdigit():
+                self._pop_char()
+
+            # TODO convert to int with informative error message
+            exponent = exponent_sign * int(
+                self._get_to_current(exponent_start))
+
+        if self._match("i"):
+            self._add_token(
+                TokenType.IMAGNUMERAL,
+                ComplexValue(
+                    RealValue(integer_part, non_integer_part, exponent)))
+            return
+
+        self._add_token(TokenType.REALNUMERAL,
+                        RealValue(integer_part, non_integer_part, exponent))
 
     def _add_token(self, ttype: TokenType, literal: Any = None) -> None:
         lexeme = self._source[self._start:self._current]
