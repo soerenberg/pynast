@@ -35,3 +35,9 @@ class Parser:
     def _peek(self) -> Token:
         """Peek at current element."""
         return self._token_list[self._current]
+
+    def _check(self, ttype: TokenType) -> bool:
+        if self._is_at_end():
+            return False
+
+        return self._peek().ttype == ttype
