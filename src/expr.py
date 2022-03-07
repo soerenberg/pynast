@@ -31,9 +31,28 @@ class Unary(Expr):
         return visitor.visit_unary(self)
 
 
+class ArithmeticBinary(Expr):
+    """Arithmetic binary expression."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, left: Expr, operator: tokens.Token, right: Expr):
+        super().__init__()
+        self.left = left
+        self.operator = operator
+        self.right = right
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_arithmetic_binary(self)
+
+
 class Visitor:
     """Visitor for Expr types."""
 
     @abc.abstractmethod
     def visit_unary(self, expr: Unary) -> Any:
         """Visit Unary."""
+
+    @abc.abstractmethod
+    def visit_arithmetic_binary(self, expr: ArithmeticBinary) -> Any:
+        """Visit ArithmeticBinary."""
