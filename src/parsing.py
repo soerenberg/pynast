@@ -44,6 +44,10 @@ class Parser:
         """Peek at current element."""
         return self._token_list[self._current]
 
+    def _previous(self) -> Token:
+        """Return previous token."""
+        return self._token_list[self._current - 1]
+
     def _check(self, ttype: TokenType) -> bool:
         if self._is_at_end():
             return False
