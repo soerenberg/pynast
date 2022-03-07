@@ -53,3 +53,10 @@ class Parser:
             return False
 
         return self._peek().ttype == ttype
+
+    def _match_any(self, *args) -> bool:
+        for ttype in args:
+            if self._check(ttype):
+                self._pop_token()
+                return True
+        return False

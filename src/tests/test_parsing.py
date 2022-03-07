@@ -53,3 +53,20 @@ class TestParser:
         result = lexer._check(ttype)
 
         assert result == expected
+
+    @pytest.mark.parametrize(
+        "ttypes,check_ttype,expected",
+        [([], TokenType.TIMES, False),
+         ([TokenType.BANG, TokenType.PLUS, TokenType.MINUS
+           ], TokenType.BANG, True),
+         ([TokenType.BANG, TokenType.PLUS, TokenType.MINUS
+           ], TokenType.MINUS, True),
+         ([TokenType.BANG, TokenType.PLUS, TokenType.MINUS
+           ], TokenType.TIMES, False)])
+    def test_match_any(self, lexer, ttypes, check_ttype, expected, mocker):
+        """Test Parser._match_any."""
+        mocker.patch.object(lexer, "_check", new=lambda x: x == check_ttype)
+
+        result = lexer._match_any(*ttypes)
+
+        assert result == expected
