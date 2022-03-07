@@ -3,6 +3,14 @@ from typing import Any, List
 from tokens import Token, TokenType
 
 
+
+class ParseError(Exception):
+    """Parse exception."""
+
+    def __init__(self, token: Token, message: str):
+        super().__init__(f"In line {token.line}: {message}")
+
+
 class Parser:
     """Stan parser."""
 
