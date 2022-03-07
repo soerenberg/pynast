@@ -2,6 +2,7 @@
 from typing import Any, List
 from tokens import Token, TokenType
 
+import expr
 
 
 class ParseError(Exception):
@@ -60,3 +61,14 @@ class Parser:
                 self._pop_token()
                 return True
         return False
+
+    def _parse_unary(self) -> expr.Unary:
+        if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS,
+                           TokenType.HAT):
+            operator = self._previous()
+
+            right = self._parse_unary()
+
+            return expr.Unary(operator, right)
+
+        raise ParseError(self._peek(), "Expect '!', '-', '+' or '^'.")
