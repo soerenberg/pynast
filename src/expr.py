@@ -46,6 +46,19 @@ class ArithmeticBinary(Expr):
         return visitor.visit_arithmetic_binary(self)
 
 
+class Variable(Expr):
+    """Variable expression."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, identifier: tokens.Token):
+        super().__init__()
+        self.identifier = identifier
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_variable(self)
+
+
 class Visitor:
     """Visitor for Expr types."""
 
@@ -56,3 +69,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_arithmetic_binary(self, expr: ArithmeticBinary) -> Any:
         """Visit ArithmeticBinary."""
+
+    @abc.abstractmethod
+    def visit_variable(self, expr: Variable) -> Any:
+        """Visit Variable."""
