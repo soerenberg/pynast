@@ -66,7 +66,20 @@ class TestParser:
     def test_match_any(self, lexer, ttypes, check_ttype, expected, mocker):
         """Test Parser._match_any."""
         mocker.patch.object(lexer, "_check", new=lambda x: x == check_ttype)
+        mocker.patch.object(lexer, "_pop_token")
 
         result = lexer._match_any(*ttypes)
 
         assert result == expected
+
+    def test_match(self, lexer, mocker):
+        mocked_return_value = mocker.MagicMock()
+        mocker.patch.object(lexer,
+                            "_match_any",
+                            return_value=mocked_return_value)
+
+        mocked_ttype = mocker.MagicMock()
+        result = lexer._match(mocked_ttype)
+
+        lexer._match_any.assert_called_once_with(mocked_ttype)
+        assert result is mocked_return_value

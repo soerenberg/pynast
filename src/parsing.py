@@ -62,6 +62,10 @@ class Parser:
                 return True
         return False
 
+    def _match(self, ttype: TokenType) -> bool:
+        """Short form for _match_any with only one argument."""
+        return self._match_any(ttype)
+
     def _parse_unary(self) -> expr.Unary:
         if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS,
                            TokenType.HAT):
