@@ -83,3 +83,32 @@ class TestParser:
 
         lexer._match_any.assert_called_once_with(mocked_ttype)
         assert result is mocked_return_value
+
+    @pytest.mark.parametrize("token_list,current,ttype,expected_index", [
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.EOF, 1, 2)], 0,
+         TokenType.BANG, 0),
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.SEMICOLON, 1, 2),
+          Token(TokenType.EOF, 1, 3)], 1, TokenType.SEMICOLON, 1),
+    ])  # yapf: disable
+    def test_consume(self, token_list, current, ttype, expected_index):
+        """Test Parser._consume."""
+        lexer = parsing.Parser(token_list)
+        lexer._current = current
+
+        result = lexer._consume(ttype)
+
+        assert result is token_list[expected_index]
+
+    @pytest.mark.parametrize("token_list,current,ttype,expected_index", [
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.EOF, 1, 2)], 0,
+         TokenType.MINUS, 0),
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.SEMICOLON, 1, 2),
+          Token(TokenType.EOF, 1, 3)], 2, TokenType.SEMICOLON, 1),
+    ])  # yapf: disable
+    def test_consume_raises(self, token_list, current, ttype, expected_index):
+        """Test Parser._consume."""
+        lexer = parsing.Parser(token_list)
+        lexer._current = current
+
+        with pytest.raises(parsing.ParseError):
+            _ = lexer._consume(ttype)

@@ -70,6 +70,14 @@ class Parser:
         """Short form for _match_any with only one argument."""
         return self._match_any(ttype)
 
+    def _consume(self, ttype: TokenType) -> Token:
+        """Consume token of required type or raise error."""
+        if self._check(ttype):
+            return self._pop_token()
+
+        raise ParseError(self._get_current(), "Expected {ttype}.")
+
+
     def _parse_unary(self) -> expr.Unary:
         if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS,
                            TokenType.HAT):
