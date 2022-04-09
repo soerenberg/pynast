@@ -85,12 +85,18 @@ class Variable(Expr):
 
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, identifier: tokens.Token):
+    def __init__(self, identifier: tokens.Token,
+                 indexes: Optional[List[Indexes]]):
         super().__init__()
         self.identifier = identifier
+        self.indexes = indexes or []
 
     def accept(self, visitor: Visitor) -> Any:
         return visitor.visit_variable(self)
+
+    def __eq__(self, other) -> bool:
+        return (self.identifier == other.identifier
+                and self.indexes == other.indexes)
 
 
 class Visitor:
