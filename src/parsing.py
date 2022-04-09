@@ -89,6 +89,26 @@ class Parser:
 
         raise ParseError(self._peek(), "Expect '!', '-', '+' or '^'.")
 
+
+    def _parse_lhs(self):
+        # <lhs> ::= <identifier>
+        # | <lhs> LBRACK <indexes> RBRACK
+
+        # Due to left-recursivity transformed to:
+        # <lhs> ::= <identifier> (LBRACK <indexes> RBRACK)*
+
+        if not self._check(TokenType.IDENTIFIER):
+            raise ParseError(self._get_current(),
+                             "Expect identifier or lhs expression.")
+        identifier = self._pop_token()
+
+        indexes = []
+        while self._match(TokenType.LBRACK):
+            indexes.append(self._parse_indexes())
+            self._consume(TokenType.RBRACK)
+
+        return expr.Variable(identifier, indexes)
+
     def _parse_indexes(self) -> expr.Indexes:
         # <indexes> ::= epsilon
         #     | COLON
