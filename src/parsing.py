@@ -88,3 +88,16 @@ class Parser:
             return expr.Unary(operator, right)
 
         raise ParseError(self._peek(), "Expect '!', '-', '+' or '^'.")
+
+    def _parse_indexes(self) -> expr.Indexes:
+        # <indexes> ::= epsilon
+        #     | COLON
+        #     | <expression>
+        #     | <expression> COLON
+        #     | COLON <expression>
+        #     | <expression> COLON <expression>
+        #     | <indexes> COMMA <indexes>
+
+        # TODO only ':' is allowed at the moment.
+        self._consume(TokenType.COLON)
+        return expr.Indexes([expr.Range(None, None)])
