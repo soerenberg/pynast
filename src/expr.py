@@ -65,6 +65,21 @@ class Range(Expr):
         return self.left == other.left and self.right == other.right
 
 
+class Indexes(Expr):
+    """Indexes expression."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, expressions: List[Expr]):
+        self.expressions = expressions
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_indexes(self)
+
+    def __eq__(self, other) -> bool:
+        return self.expressions == other.expressions
+
+
 class Variable(Expr):
     """Variable expression."""
 
@@ -92,6 +107,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_range(self, expr: Range) -> Any:
         """Visit Range."""
+
+    @abc.abstractmethod
+    def visit_indexes(self, expr: Indexes) -> Any:
+        """Visit Indexes."""
 
     @abc.abstractmethod
     def visit_variable(self, expr: Variable) -> Any:
