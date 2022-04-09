@@ -77,7 +77,6 @@ class Parser:
 
         raise ParseError(self._get_current(), "Expected {ttype}.")
 
-
     def _parse_unary(self) -> expr.Unary:
         if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS,
                            TokenType.HAT):
@@ -89,6 +88,12 @@ class Parser:
 
         raise ParseError(self._peek(), "Expect '!', '-', '+' or '^'.")
 
+    def _parse_expression(self) -> expr.Expr:
+        # <expression> ::= <lhs>
+        #        | <non_lhs>
+
+        # TODO implement parsing <non_lhs>
+        return self._parse_lhs()
 
     def _parse_lhs(self):
         # <lhs> ::= <identifier>
