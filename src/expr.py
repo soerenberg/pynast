@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import abc
-from typing import Any
+from typing import Any, List, Optional
 
 import tokens
 
@@ -46,6 +46,25 @@ class ArithmeticBinary(Expr):
         return visitor.visit_arithmetic_binary(self)
 
 
+class Range(Expr):
+    """Index range expression.
+
+    Has the form <expression> ':' <expression> .
+    """
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, left: Optional[Expr], right: Optional[Expr]):
+        self.left = left
+        self.right = right
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_range(self)
+
+    def __eq__(self, other) -> bool:
+        return self.left == other.left and self.right == other.right
+
+
 class Variable(Expr):
     """Variable expression."""
 
@@ -69,6 +88,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_arithmetic_binary(self, expr: ArithmeticBinary) -> Any:
         """Visit ArithmeticBinary."""
+
+    @abc.abstractmethod
+    def visit_range(self, expr: Range) -> Any:
+        """Visit Range."""
 
     @abc.abstractmethod
     def visit_variable(self, expr: Variable) -> Any:
