@@ -73,6 +73,7 @@ class TestParser:
         assert result == expected
 
     def test_match(self, lexer, mocker):
+        """Test Parser._match."""
         mocked_return_value = mocker.MagicMock()
         mocker.patch.object(lexer,
                             "_match_any",
