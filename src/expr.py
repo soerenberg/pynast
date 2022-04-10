@@ -29,6 +29,9 @@ class Literal(Expr):
     def accept(self, visitor: Visitor) -> Any:
         return visitor.visit_literal(self)
 
+    def __eq__(self, other) -> bool:
+        return isinstance(other, Literal) and self.token == other.token
+
 
 class Unary(Expr):
     """Unary operation with one operator and one expression."""
