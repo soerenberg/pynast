@@ -46,6 +46,10 @@ class Unary(Expr):
     def accept(self, visitor: Visitor) -> Any:
         return visitor.visit_unary(self)
 
+    def __eq__(self, other) -> bool:
+        return (isinstance(other, Unary) and self.operator == other.operator
+                and self.right == other.right)
+
 
 class ArithmeticBinary(Expr):
     """Arithmetic binary expression."""

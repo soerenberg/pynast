@@ -4,9 +4,14 @@ import pytest
 import expr
 from tokens import Token, TokenType
 
+# Examples of Token instances
 TOKEN_0 = Token(TokenType.IDENTIFIER, 1, 1, "abc")
 TOKEN_1 = Token(TokenType.IDENTIFIER, 1, 2, "abc")
-TOKEN_1 = Token(TokenType.IDENTIFIER, 1, 1, "ABC")
+TOKEN_2 = Token(TokenType.BANG, 2, 3, "!")
+
+# Examples of Expr instances
+EXPR_0 = expr.Literal(TOKEN_0)
+EXPR_1 = expr.Literal(TOKEN_1)
 
 # pylint: disable=no-self-use, protected-access, too-few-public-methods
 
@@ -48,3 +53,14 @@ class TestUnary:
         unary.accept(visitor)
 
         visitor.visit_unary.assert_called_once_with(unary)
+
+    @pytest.mark.parametrize(
+        "left,right,expected",
+        [(expr.Unary(TOKEN_2, EXPR_0), expr.Unary(TOKEN_2, EXPR_0), True),
+         (expr.Unary(TOKEN_2, EXPR_0), expr.Unary(TOKEN_2, EXPR_1), False),
+         (expr.Unary(TOKEN_2, EXPR_0), EXPR_1, False)])
+    def test_eq(self, left, right, expected):
+        """Test __eq__ method."""
+        result = left == right
+
+        assert result == expected
