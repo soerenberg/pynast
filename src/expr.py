@@ -17,6 +17,19 @@ class Expr:
         """Accept method for the visitor pattern."""
 
 
+class Literal(Expr):
+    """Literal expression."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, token: tokens.Token):
+        super().__init__()
+        self.token = token
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_literal(self)
+
+
 class Unary(Expr):
     """Unary operation with one operator and one expression."""
 
@@ -101,6 +114,10 @@ class Variable(Expr):
 
 class Visitor:
     """Visitor for Expr types."""
+
+    @abc.abstractmethod
+    def visit_literal(self, expr: Literal) -> Any:
+        """Visit Literal."""
 
     @abc.abstractmethod
     def visit_unary(self, expr: Unary) -> Any:
