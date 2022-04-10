@@ -65,6 +65,12 @@ class ArithmeticBinary(Expr):
     def accept(self, visitor: Visitor) -> Any:
         return visitor.visit_arithmetic_binary(self)
 
+    def __eq__(self, other) -> bool:
+        return (isinstance(other, ArithmeticBinary) and self.left == other.left
+                and self.operator == other.operator
+                and self.right == other.right)
+
+
 
 class Range(Expr):
     """Index range expression.

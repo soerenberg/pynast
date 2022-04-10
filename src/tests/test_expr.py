@@ -80,3 +80,18 @@ class TestArithmeticBinary:
         binary.accept(visitor)
 
         visitor.visit_arithmetic_binary.assert_called_once_with(binary)
+
+    @pytest.mark.parametrize(
+        "left,right,expected",
+        [(expr.ArithmeticBinary(EXPR_0, TOKEN_3, EXPR_0),
+          expr.ArithmeticBinary(EXPR_0, TOKEN_3, EXPR_0), True),
+         (expr.ArithmeticBinary(EXPR_0, TOKEN_3, EXPR_1),
+          expr.ArithmeticBinary(EXPR_0, TOKEN_3, EXPR_0), False),
+         (expr.ArithmeticBinary(EXPR_0, TOKEN_3, EXPR_1),
+          expr.ArithmeticBinary(EXPR_0, TOKEN_3, EXPR_0), False),
+         (expr.ArithmeticBinary(EXPR_0, TOKEN_3, EXPR_0), EXPR_0, False)])
+    def test_eq(self, left, right, expected):
+        """Test __eq__ method."""
+        result = left == right
+
+        assert result == expected
