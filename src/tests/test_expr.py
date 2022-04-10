@@ -8,6 +8,8 @@ from tokens import Token, TokenType
 TOKEN_0 = Token(TokenType.IDENTIFIER, 1, 1, "abc")
 TOKEN_1 = Token(TokenType.IDENTIFIER, 1, 2, "abc")
 TOKEN_2 = Token(TokenType.BANG, 2, 3, "!")
+TOKEN_3 = Token(TokenType.PLUS, 2, 3, "+")
+TOKEN_4 = Token(TokenType.PLUS, 3, 3, "+")
 
 # Examples of Expr instances
 EXPR_0 = expr.Literal(TOKEN_0)
@@ -64,3 +66,17 @@ class TestUnary:
         result = left == right
 
         assert result == expected
+
+
+class TestArithmeticBinary:
+    """Tests for expr.ArithmeticBinary."""
+
+    def test_accept(self, mocker):
+        """Test accept method."""
+        visitor = mocker.Mock()
+        binary = expr.ArithmeticBinary(mocker.Mock(), mocker.Mock(),
+                                       mocker.Mock())
+
+        binary.accept(visitor)
+
+        visitor.visit_arithmetic_binary.assert_called_once_with(binary)
