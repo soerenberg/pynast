@@ -35,3 +35,16 @@ class TestLiteral:
         result = left == right
 
         assert result == expected
+
+
+class TestUnary:
+    """Tests for expr.Unary."""
+
+    def test_accept(self, mocker):
+        """Test accept method."""
+        visitor = mocker.Mock()
+        unary = expr.Unary(mocker.Mock(), mocker.Mock())
+
+        unary.accept(visitor)
+
+        visitor.visit_unary.assert_called_once_with(unary)
