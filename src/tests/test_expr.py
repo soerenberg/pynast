@@ -95,3 +95,32 @@ class TestArithmeticBinary:
         result = left == right
 
         assert result == expected
+
+
+class TestTernary:
+    """Tests for expr.Ternary."""
+
+    def test_accept(self, mocker):
+        """Test accept method."""
+        visitor = mocker.Mock()
+        ternary = expr.Ternary(mocker.Mock(), mocker.Mock(), mocker.Mock(),
+                               mocker.Mock(), mocker.Mock())
+
+        ternary.accept(visitor)
+
+        visitor.visit_ternary.assert_called_once_with(ternary)
+
+    @pytest.mark.parametrize("left,right,expected", [
+        (expr.Ternary(EXPR_0, TOKEN_3, EXPR_1, TOKEN_4, EXPR_0),
+         expr.Ternary(EXPR_0, TOKEN_3, EXPR_1, TOKEN_4, EXPR_0), True),
+        (expr.Ternary(EXPR_0, TOKEN_3, EXPR_0, TOKEN_4, EXPR_0),
+         expr.Ternary(EXPR_0, TOKEN_3, EXPR_1, TOKEN_4, EXPR_0), False),
+        (expr.Ternary(EXPR_0, TOKEN_3, EXPR_1, TOKEN_3, EXPR_0),
+         expr.Ternary(EXPR_0, TOKEN_3, EXPR_1, TOKEN_4, EXPR_0), False),
+        (expr.Ternary(EXPR_0, TOKEN_3, EXPR_1, TOKEN_3, EXPR_0), EXPR_0, False)
+    ])
+    def test_eq(self, left, right, expected):
+        """Test __eq__ method."""
+        result = left == right
+
+        assert result == expected

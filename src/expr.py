@@ -71,6 +71,32 @@ class ArithmeticBinary(Expr):
                 and self.right == other.right)
 
 
+class Ternary(Expr):
+    """Ternary expression, with 3 operands and two infix operators."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, left: Expr, left_operator: tokens.Token, middle: Expr,
+                 right_operator: tokens.Token,
+                 right: Expr
+                 ):  # yapf: disable, pylint: disable=too-many-arguments
+        super().__init__()
+        self.left = left
+        self.left_operator = left_operator
+        self.middle = middle
+        self.right_operator = right_operator
+        self.right = right
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_ternary(self)
+
+    def __eq__(self, other) -> bool:
+        return (isinstance(other, Ternary) and self.left == other.left
+                and self.left_operator == other.left_operator
+                and self.middle == other.middle
+                and self.right_operator == other.right_operator
+                and self.right == other.right)
+
 
 class Range(Expr):
     """Index range expression.
@@ -139,6 +165,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_arithmetic_binary(self, expr: ArithmeticBinary) -> Any:
         """Visit ArithmeticBinary."""
+
+    @abc.abstractmethod
+    def visit_ternary(self, expr: Ternary) -> Any:
+        """Visit Ternary."""
 
     @abc.abstractmethod
     def visit_range(self, expr: Range) -> Any:
