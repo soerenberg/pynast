@@ -148,7 +148,8 @@ class Variable(Expr):
         return visitor.visit_variable(self)
 
     def __eq__(self, other) -> bool:
-        return (self.identifier == other.identifier
+        return (isinstance(other, Variable)
+                and self.identifier == other.identifier
                 and self.indexes == other.indexes)
 
 
