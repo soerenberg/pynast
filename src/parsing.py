@@ -127,6 +127,17 @@ class Parser:
         self._consume(TokenType.COLON)
         return expr.Indexes([expr.Range(None, None)])
 
+
+    def _parse_precedence_0(self) -> expr.Expr:
+        """Precedence level 0.
+
+        Unary postfix `'` (transposition),
+        `()`  (function application),
+        `[]`  (array, matrix indexing).
+        """
+        # TODO implement `()` and `[]`
+        return self._parse_primary()
+
     def _parse_primary(self) -> expr.Expr:
         # TODO only literals can parsed atm. False, True etc. missing.
         literal_ttypes = [
