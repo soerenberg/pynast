@@ -115,6 +115,34 @@ class TestParser:
         with pytest.raises(parsing.ParseError):
             _ = lexer._consume(ttype)
 
+    @pytest.mark.parametrize("token_list,expected", [
+        ([
+            Token(TokenType.BANG, 1, 1, "!"),
+            Token(TokenType.STRING, 1, 2, "abc"),
+            Token(TokenType.EOF, 1, 5, ""),
+        ],
+         expr.Unary(Token(TokenType.BANG, 1, 1, "!"),
+                    expr.Literal(Token(TokenType.STRING, 1, 2, "abc")))),
+        ([
+            Token(TokenType.BANG, 1, 1, "!"),
+            Token(TokenType.BANG, 1, 2, "!"),
+            Token(TokenType.IDENTIFIER, 1, 3, "foo"),
+            Token(TokenType.EOF, 1, 6, ""),
+        ],
+         expr.Unary(
+             Token(TokenType.BANG, 1, 1, "!"),
+             expr.Unary(
+                 Token(TokenType.BANG, 1, 2, "!"),
+                 expr.Variable(Token(TokenType.IDENTIFIER, 1, 3, "foo"),
+                               None)))),
+    ])
+    def test_parse_precedence_1(self, token_list, expected):
+        """Test Parser._parse_precedence_1."""
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_precedence_1()
+
+        assert result == expected
 
     def test_parse_precedence_0_5(self):
         """Test Parser._parse_precedence_0_5."""

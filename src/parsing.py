@@ -128,6 +128,14 @@ class Parser:
         return expr.Indexes([expr.Range(None, None)])
 
 
+    def _parse_precedence_1(self) -> expr.Expr:
+        """Precedence level 1. Unary prefix operators `!`, `-` and `+`."""
+        if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS):
+            operator = self._previous()
+            right = self._parse_precedence_1()
+            return expr.Unary(operator, right)
+        return self._parse_precedence_0_5()
+
     def _parse_precedence_0_5(self) -> expr.Expr:
         """Precedence level 0.5.
 
