@@ -1,6 +1,7 @@
 """Tests for parsing module."""
 import pytest
 
+import expr
 import parsing
 from tokens import Token, TokenType
 
@@ -113,3 +114,25 @@ class TestParser:
 
         with pytest.raises(parsing.ParseError):
             _ = lexer._consume(ttype)
+
+    @pytest.mark.parametrize("token_list,expected", [
+        ([
+            Token(TokenType.STRING, 2, 3, "abc"),
+            Token(TokenType.EOF, 2, 4, "")
+        ], expr.Literal(Token(TokenType.STRING, 2, 3, "abc"))),
+        ([
+            Token(TokenType.INTNUMERAL, 2, 3, "7"),
+            Token(TokenType.EOF, 2, 4, "")
+        ], expr.Literal(Token(TokenType.INTNUMERAL, 2, 3, "7"))),
+        ([
+            Token(TokenType.IDENTIFIER, 5, 2, "my_var"),
+            Token(TokenType.EOF, 5, 3, "")
+        ], expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_var"), None)),
+    ])
+    def test_parse_primary(self, token_list, expected):
+        """Test Parser._parse_primary."""
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_precedence_0_5()
+
+        assert result == expected

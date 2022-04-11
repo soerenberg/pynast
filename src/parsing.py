@@ -126,3 +126,18 @@ class Parser:
         # TODO only ':' is allowed at the moment.
         self._consume(TokenType.COLON)
         return expr.Indexes([expr.Range(None, None)])
+
+    def _parse_primary(self) -> expr.Expr:
+        # TODO only literals can parsed atm. False, True etc. missing.
+        literal_ttypes = [
+            TokenType.STRING, TokenType.INTNUMERAL, TokenType.REALNUMERAL,
+            TokenType.IMAGNUMERAL
+        ]
+        if any(self._check(ttype) for ttype in literal_ttypes):
+            return expr.Literal(self._pop_token())
+
+        if self._match(TokenType.IDENTIFIER):
+            # TODO handle indexing
+            return expr.Variable(self._previous(), None)
+
+        raise ParseError(self._get_current(), "")
