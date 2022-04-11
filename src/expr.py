@@ -129,7 +129,8 @@ class Indexes(Expr):
         return visitor.visit_indexes(self)
 
     def __eq__(self, other) -> bool:
-        return self.expressions == other.expressions
+        return (isinstance(other, Indexes)
+                and self.expressions == other.expressions)
 
 
 class Variable(Expr):
