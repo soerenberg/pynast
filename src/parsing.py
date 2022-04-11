@@ -128,6 +128,21 @@ class Parser:
         return expr.Indexes([expr.Range(None, None)])
 
 
+    def _parse_precedence_2(self) -> expr.Expr:
+        """Precedence level 2.
+
+        `.*` elementwise multiplication, binary infix, left associative,
+        `./` elementwise division, binary infix, left associative.
+        """
+        expression = self._parse_precedence_1()
+
+        while self._match_any(TokenType.ELTTIMES, TokenType.ELTDIVIDE):
+            operator = self._previous()
+            right = self._parse_precedence_1()
+            expression = expr.ArithmeticBinary(expression, operator, right)
+
+        return expression
+
     def _parse_precedence_1(self) -> expr.Expr:
         """Precedence level 1. Unary prefix operators `!`, `-` and `+`."""
         if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS):

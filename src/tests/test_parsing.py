@@ -115,6 +115,36 @@ class TestParser:
         with pytest.raises(parsing.ParseError):
             _ = lexer._consume(ttype)
 
+    @pytest.mark.parametrize("ttype,lexeme", [(TokenType.ELTTIMES, ".*"),
+                                              (TokenType.ELTDIVIDE, "./")])
+    def test_parse_precedence_2(self, ttype, lexeme, mocker):
+        """Test Parser._parse_precedence_2."""
+        # Test left-associativity:
+        # left @ middle @ right  =  (left @ middle) @ right
+        operator_left = Token(ttype, 2, 3, lexeme)
+        operator_right = Token(ttype, 2, 7, lexeme)
+
+        left = mocker.Mock()
+        middle = mocker.Mock()
+        right = mocker.Mock()
+        expected = expr.ArithmeticBinary(
+            expr.ArithmeticBinary(left, operator_left, middle), operator_right,
+            right)
+
+        token_list = [
+            operator_left,
+            operator_right,
+            Token(TokenType.TIMES, 2, 8, ""),
+        ]
+        lexer = parsing.Parser(token_list)
+        mocker.patch.object(lexer,
+                            "_parse_primary",
+                            side_effect=[left, middle, right])
+
+        result = lexer._parse_precedence_2()
+
+        assert result == expected
+
     @pytest.mark.parametrize("token_list,expected", [
         ([
             Token(TokenType.BANG, 1, 1, "!"),
