@@ -128,6 +128,23 @@ class Parser:
         return expr.Indexes([expr.Range(None, None)])
 
 
+    def _parse_precedence_4(self) -> expr.Expr:
+        """Precedence level 4.
+
+        `*` multiplication, binary infix, left associative,
+        `/` (right) division, binary infix, left associative,
+        `%` modulus, binary infix, left associative.
+        """
+        expression = self._parse_precedence_3()
+
+        while self._match_any(TokenType.TIMES, TokenType.DIVIDE,
+                              TokenType.MODULO):
+            operator = self._previous()
+            right = self._parse_precedence_3()
+            expression = expr.ArithmeticBinary(expression, operator, right)
+
+        return expression
+
     def _parse_precedence_3(self) -> expr.Expr:
         """Precedence level 3.
 
