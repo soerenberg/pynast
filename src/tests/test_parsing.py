@@ -115,33 +115,64 @@ class TestParser:
         with pytest.raises(parsing.ParseError):
             _ = lexer._consume(ttype)
 
-    @pytest.mark.parametrize("ttype,lexeme", [(TokenType.ELTTIMES, ".*"),
-                                              (TokenType.ELTDIVIDE, "./")])
-    def test_parse_precedence_2(self, ttype, lexeme, mocker):
-        """Test Parser._parse_precedence_2."""
-        # Test left-associativity:
-        # left @ middle @ right  =  (left @ middle) @ right
+    @pytest.mark.parametrize("ttype,lexeme,left_associative", [
+        (TokenType.OR, "||", True),
+        (TokenType.AND, "||", True),
+        (TokenType.EQUALS, "==", True),
+        (TokenType.NEQUALS, "!=", True),
+        (TokenType.LABRACK, "<", True),
+        (TokenType.LEQ, "<=", True),
+        (TokenType.RABRACK, ">", True),
+        (TokenType.GEQ, ">=", True),
+        (TokenType.OR, "||", True),
+        (TokenType.PLUS, "+", True),
+        (TokenType.MINUS, "-", True),
+        (TokenType.TIMES, "*", True),
+        (TokenType.DIVIDE, "/", True),
+        (TokenType.MODULO, "%", True),
+        (TokenType.LDIVIDE, "\\", True),
+        (TokenType.ELTTIMES, ".*", True),
+        (TokenType.ELTTIMES, ".*", True),
+        (TokenType.HAT, "^", False),
+    ])
+    def test_binary_op(self, ttype, lexeme, left_associative, mocker):
+        """Test binary operation.
+
+        This is a simple test to test arithmetic or logical operations and
+        their associativity. E.g. for a left associative binary op `#` we
+        perform a test that an expression of the form
+            (a # b) # c,
+        is parsed correctly. For right associative binary we use
+            a # (b # c).
+        """
         operator_left = Token(ttype, 2, 3, lexeme)
         operator_right = Token(ttype, 2, 7, lexeme)
 
         left = mocker.Mock()
         middle = mocker.Mock()
         right = mocker.Mock()
-        expected = expr.ArithmeticBinary(
-            expr.ArithmeticBinary(left, operator_left, middle), operator_right,
-            right)
+
+        if left_associative:
+            expected = expr.ArithmeticBinary(
+                expr.ArithmeticBinary(left, operator_left, middle),
+                operator_right, right)
+        else:
+            expected = expr.ArithmeticBinary(
+                left, operator_left,
+                expr.ArithmeticBinary(middle, operator_right, right))
 
         token_list = [
+            left,
             operator_left,
+            middle,
             operator_right,
-            Token(TokenType.TIMES, 2, 8, ""),
+            right,
+            Token(TokenType.IDENTIFIER, 2, 8, "abc"),
         ]
         lexer = parsing.Parser(token_list)
-        mocker.patch.object(lexer,
-                            "_parse_primary",
-                            side_effect=[left, middle, right])
+        mocker.patch.object(lexer, "_parse_primary", new=lexer._pop_token)
 
-        result = lexer._parse_precedence_2()
+        result = lexer._parse_precedence_10()
 
         assert result == expected
 
@@ -171,32 +202,6 @@ class TestParser:
         lexer = parsing.Parser(token_list)
 
         result = lexer._parse_precedence_1()
-
-        assert result == expected
-
-    def test_parse_precedence_0_5(self):
-        """Test Parser._parse_precedence_0_5."""
-        token_list = [
-            Token(TokenType.IDENTIFIER, 1, 1, "foo"),
-            Token(TokenType.HAT, 1, 2, "^"),
-            Token(TokenType.IDENTIFIER, 1, 3, "foo"),
-            Token(TokenType.HAT, 1, 4, "^"),
-            Token(TokenType.IDENTIFIER, 1, 5, "foo"),
-            Token(TokenType.EOF, 1, 6, ""),
-        ]
-        expected = expr.ArithmeticBinary(
-            left=expr.Variable(Token(TokenType.IDENTIFIER, 1, 1, "foo"), None),
-            operator=Token(TokenType.HAT, 1, 2, "^"),
-            right=expr.ArithmeticBinary(
-                left=expr.Variable(Token(TokenType.IDENTIFIER, 1, 3, "foo"),
-                                   None),
-                operator=Token(TokenType.HAT, 1, 4, "^"),
-                right=expr.Variable(Token(TokenType.IDENTIFIER, 1, 5, "foo"),
-                                    None)))
-
-        lexer = parsing.Parser(token_list)
-
-        result = lexer._parse_precedence_0_5()
 
         assert result == expected
 
