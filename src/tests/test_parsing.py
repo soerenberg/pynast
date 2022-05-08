@@ -211,6 +211,35 @@ class TestParser:
 
         assert result == expected
 
+    def test_parse_function_application(self):
+        """Test parsing function call of the form Identifier(arg0,arg1)."""
+        token_list = [
+            Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
+            Token(TokenType.LPAREN, 5, 10, "("),
+            Token(TokenType.IDENTIFIER, 5, 16, "my_var"),
+            Token(TokenType.COMMA, 5, 23, ","),
+            Token(TokenType.IDENTIFIER, 5, 24, "some_other_var"),
+            Token(TokenType.RPAREN, 5, 40, ")"),
+        ]
+
+        expected = expr.FunctionApplication(
+            callee=expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
+                                 None),
+            closing_paren=Token(TokenType.RPAREN, 5, 40, ")"),
+            arguments=[
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 16, "my_var"),
+                              None),
+                expr.Variable(
+                    Token(TokenType.IDENTIFIER, 5, 24, "some_other_var"),
+                    None),
+            ])
+
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_precedence_0()
+
+        assert result == expected
+
     @pytest.mark.parametrize("token_list,expected", [
         ([
             Token(TokenType.STRING, 2, 3, "abc"),

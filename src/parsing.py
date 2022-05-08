@@ -302,8 +302,32 @@ class Parser:
         `()`  (function application),
         `[]`  (array, matrix indexing).
         """
-        # TODO implement `()` and `[]`
-        return self._parse_primary()
+        # TODO implement `[]`
+        expr = self._parse_primary()
+        print(expr)
+
+        if self._match(TokenType.LPAREN):
+            expr = self._complete_function_application(expr)
+
+        return expr
+
+    def _complete_function_application(
+            self, callee: expr.Expr) -> expr.FunctionApplication:
+        """Finish parsing FunctionApplication.
+
+        At this point it is assumed that callee and opening parenthesis have
+        been consumed.
+        """
+        arguments = []
+        if not self._check(TokenType.RPAREN):
+            arguments.append(self._parse_expression())
+
+            while self._match(TokenType.COMMA):
+                arguments.append(self._parse_expression())
+
+        paren = self._consume(TokenType.RPAREN, "Expect ')' after arguments.")
+
+        return expr.FunctionApplication(callee, paren, arguments)
 
     def _parse_primary(self) -> expr.Expr:
         # TODO only literals can parsed atm. False, True etc. missing.
