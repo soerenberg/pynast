@@ -98,6 +98,25 @@ class Ternary(Expr):
                 and self.right == other.right)
 
 
+class FunctionApplication(Expr):
+    """Function application."""
+
+    def __init__(self, callee: Expr, closing_paren: tokens.Token,
+                 arguments: List[Expr]):
+        self.callee = callee
+        self.closing_paren = closing_paren
+        self.arguments = arguments
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_function_application(self)
+
+    def __eq__(self, other) -> bool:
+        return (isinstance(other, FunctionApplication)
+                and self.callee == other.callee
+                and self.closing_paren == other.closing_paren
+                and self.arguments == other.arguments)
+
+
 class Range(Expr):
     """Index range expression.
 
@@ -171,6 +190,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_ternary(self, expr: Ternary) -> Any:
         """Visit Ternary."""
+
+    @abc.abstractmethod
+    def visit_function_application(self, expr: FunctionApplication) -> Any:
+        """Visit FunctionApplication."""
 
     @abc.abstractmethod
     def visit_range(self, expr: Range) -> Any:
