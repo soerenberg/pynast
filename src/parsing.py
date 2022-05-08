@@ -128,6 +128,28 @@ class Parser:
         return expr.Indexes([expr.Range(None, None)])
 
 
+    def _parse_precedence_10(self) -> expr.Expr:
+        """Precedence level 10.
+
+        `?~:` conditional op, ternary infix, right associative.
+        """
+        # According to the Stan manual
+        # a ? b : c ? d : e    is equivalent to   a ? b : (c ? d : e)
+        # It is also implied that
+        # a ? b ? c : d : e   is equivalent to   a ? (b ? c : d) : e
+        expression = self._parse_precedence_9()
+
+        while self._match(TokenType.QMARK):
+            left_operator = self._previous()
+            middle = self._parse_precedence_10()
+            right_operator = self._consume(TokenType.COLON)
+            right = self._parse_precedence_10()
+
+            expression = expr.Ternary(expression, left_operator, middle,
+                                      right_operator, right)
+
+        return expression
+
     def _parse_precedence_9(self) -> expr.Expr:
         """Precedence level 9.
 
