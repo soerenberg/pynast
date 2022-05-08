@@ -127,7 +127,6 @@ class Parser:
         self._consume(TokenType.COLON)
         return expr.Indexes([expr.Range(None, None)])
 
-
     def _parse_precedence_10(self) -> expr.Expr:
         """Precedence level 10.
 
