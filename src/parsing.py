@@ -1,5 +1,5 @@
 """Stan parser."""
-from typing import Any, List
+from typing import Any, List, Optional
 from tokens import Token, TokenType
 
 import expr
@@ -70,12 +70,14 @@ class Parser:
         """Short form for _match_any with only one argument."""
         return self._match_any(ttype)
 
-    def _consume(self, ttype: TokenType) -> Token:
+    def _consume(self,
+                 ttype: TokenType,
+                 message: Optional[str] = None) -> Token:
         """Consume token of required type or raise error."""
         if self._check(ttype):
             return self._pop_token()
 
-        raise ParseError(self._get_current(), "Expected {ttype}.")
+        raise ParseError(self._get_current(), message or f"Expected {ttype}.")
 
     def _parse_unary(self) -> expr.Unary:
         if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS,
