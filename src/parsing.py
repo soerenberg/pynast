@@ -128,6 +128,24 @@ class Parser:
         return expr.Indexes([expr.Range(None, None)])
 
 
+    def _parse_precedence_6(self) -> expr.Expr:
+        """Precedence level 6.
+
+        `<` less than, binary infix, left associative,
+        `<=` less than or equal, binary infix, left associative,
+        `>` greater than, binary infix, left associative,
+        `>=` greater than or equal, binary infix, left associative.
+        """
+        expression = self._parse_precedence_5()
+
+        while self._match_any(TokenType.LABRACK, TokenType.LEQ,
+                              TokenType.RABRACK, TokenType.GEQ):
+            operator = self._previous()
+            right = self._parse_precedence_5()
+            expression = expr.ArithmeticBinary(expression, operator, right)
+
+        return expression
+
     def _parse_precedence_5(self) -> expr.Expr:
         """Precedence level 5.
 
