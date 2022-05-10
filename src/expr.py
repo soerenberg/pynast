@@ -135,6 +135,20 @@ class Indexing(Expr):
                 and self.indices == other.indices)
 
 
+class Slice(Expr):
+    """Array or matrix indexing slice."""
+    def __init__(self, left: Expr, right: Expr):
+        self.left = left
+        self.right = right
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_slice(self)
+
+    def __eq__(self, other) -> bool:
+        return (isinstance(other, Slice) and self.left == other.left
+                and self.right == other.right)
+
+
 class Range(Expr):
     """Index range expression.
 
@@ -216,6 +230,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_indexing(self, expr: Indexing) -> Any:
         """Visit Indexing."""
+
+    @abc.abstractmethod
+    def visit_slice(self, expr: Slice) -> Any:
+        """Visit Slice."""
 
     @abc.abstractmethod
     def visit_range(self, expr: Range) -> Any:
