@@ -370,6 +370,6 @@ class Parser:
 
         if self._match(TokenType.IDENTIFIER):
             # TODO handle indexing
-            return expr.Variable(self._previous(), None)
+            return expr.Variable(self._previous())
 
         raise ParseError(self._get_current(), "")

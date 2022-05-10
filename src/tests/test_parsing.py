@@ -200,8 +200,7 @@ class TestParser:
              Token(TokenType.BANG, 1, 1, "!"),
              expr.Unary(
                  Token(TokenType.BANG, 1, 2, "!"),
-                 expr.Variable(Token(TokenType.IDENTIFIER, 1, 3, "foo"),
-                               None)))),
+                 expr.Variable(Token(TokenType.IDENTIFIER, 1, 3, "foo"))))),
     ])
     def test_parse_precedence_1(self, token_list, expected):
         """Test Parser._parse_precedence_1."""
@@ -223,15 +222,12 @@ class TestParser:
         ]
 
         expected = expr.FunctionApplication(
-            callee=expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
-                                 None),
+            callee=expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_func")),
             closing_paren=Token(TokenType.RPAREN, 5, 40, ")"),
             arguments=[
-                expr.Variable(Token(TokenType.IDENTIFIER, 5, 16, "my_var"),
-                              None),
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 16, "my_var")),
                 expr.Variable(
-                    Token(TokenType.IDENTIFIER, 5, 24, "some_other_var"),
-                    None),
+                    Token(TokenType.IDENTIFIER, 5, 24, "some_other_var")),
             ])
 
         lexer = parsing.Parser(token_list)
@@ -260,26 +256,21 @@ class TestParser:
         ]
 
         first_indexing = expr.Indexing(
-            callee=expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
-                                 None),
+            callee=expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_func")),
             closing_bracket=Token(TokenType.RBRACK, 5, 40, "]"),
             indices=[
-                expr.Variable(Token(TokenType.IDENTIFIER, 5, 16, "var_0"),
-                              None),
-                expr.Variable(Token(TokenType.IDENTIFIER, 5, 24, "var_1"),
-                              None),
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 16, "var_0")),
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 24, "var_1")),
             ])
         expected = expr.Indexing(
             callee=first_indexing,
             closing_bracket=Token(TokenType.RBRACK, 5, 61, "]"),
             indices=[
-                expr.Variable(Token(TokenType.IDENTIFIER, 5, 42, "var_2"),
-                              None),
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 42, "var_2")),
                 expr.Slice(
-                    expr.Variable(Token(TokenType.IDENTIFIER, 5, 50, "var_3"),
-                                  None),
-                    expr.Variable(Token(TokenType.IDENTIFIER, 5, 53, "var_4"),
-                                  None)),
+                    expr.Variable(Token(TokenType.IDENTIFIER, 5, 50, "var_3")),
+                    expr.Variable(Token(TokenType.IDENTIFIER, 5, 53,
+                                        "var_4"))),
             ])
 
         lexer = parsing.Parser(token_list)
@@ -300,7 +291,7 @@ class TestParser:
         ([
             Token(TokenType.IDENTIFIER, 5, 2, "my_var"),
             Token(TokenType.EOF, 5, 3, "")
-        ], expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_var"), None)),
+        ], expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_var"))),
     ])
     def test_parse_primary(self, token_list, expected):
         """Test Parser._parse_primary."""
