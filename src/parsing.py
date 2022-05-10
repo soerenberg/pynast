@@ -302,14 +302,15 @@ class Parser:
         `()`  (function application),
         `[]`  (array, matrix indexing).
         """
-        # TODO implement `[]`
-        expr = self._parse_primary()
-        print(expr)
+        expression = self._parse_primary()
 
         if self._match(TokenType.LPAREN):
-            expr = self._complete_function_application(expr)
+            expression = self._complete_function_application(expression)
+        elif self._check(TokenType.LBRACK):
+            while self._match(TokenType.LBRACK):
+                expression = self._complete_indexing(expression)
 
-        return expr
+        return expression
 
     def _complete_function_application(
             self, callee: expr.Expr) -> expr.FunctionApplication:
@@ -328,6 +329,25 @@ class Parser:
         paren = self._consume(TokenType.RPAREN, "Expect ')' after arguments.")
 
         return expr.FunctionApplication(callee, paren, arguments)
+
+    def _complete_indexing(
+            self, callee: expr.Expr) -> expr.Indexing:
+        """Finish parsing Indexing.
+
+        At this point it is assumed that callee and opening brackets have
+        been consumed.
+        """
+        # TODO parse slices
+        indices = []
+        if not self._check(TokenType.RBRACK):
+            indices.append(self._parse_expression())
+
+            while self._match(TokenType.COMMA):
+                indices.append(self._parse_expression())
+
+        paren = self._consume(TokenType.RBRACK, "Expect ']' after indices.")
+
+        return expr.Indexing(callee, paren, indices)
 
     def _parse_primary(self) -> expr.Expr:
         # TODO only literals can parsed atm. False, True etc. missing.

@@ -240,6 +240,49 @@ class TestParser:
 
         assert result == expected
 
+    def test_parse_indexing(self):
+        """Test parsing indexing of the form <identifier>[a,b][c,d]."""
+        token_list = [
+            Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
+            Token(TokenType.LBRACK, 5, 10, "["),
+            Token(TokenType.IDENTIFIER, 5, 16, "var_0"),
+            Token(TokenType.COMMA, 5, 23, ","),
+            Token(TokenType.IDENTIFIER, 5, 24, "var_1"),
+            Token(TokenType.RBRACK, 5, 40, "]"),
+            Token(TokenType.LBRACK, 5, 41, "["),
+            Token(TokenType.IDENTIFIER, 5, 42, "var_2"),
+            Token(TokenType.COMMA, 5, 48, ","),
+            Token(TokenType.IDENTIFIER, 5, 50, "var_3"),
+            Token(TokenType.RBRACK, 5, 61, "]"),
+            Token(TokenType.EQUALS, 5, 63, "="),
+        ]
+
+        first_indexing = expr.Indexing(
+            callee=expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
+                                 None),
+            closing_bracket=Token(TokenType.RBRACK, 5, 40, "]"),
+            indices=[
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 16, "var_0"),
+                              None),
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 24, "var_1"),
+                              None),
+            ])
+        expected = expr.Indexing(
+            callee=first_indexing,
+            closing_bracket=Token(TokenType.RBRACK, 5, 61, "]"),
+            indices=[
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 42, "var_2"),
+                              None),
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 50, "var_3"),
+                              None),
+            ])
+
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_precedence_0()
+
+        assert result == expected
+
     @pytest.mark.parametrize("token_list,expected", [
         ([
             Token(TokenType.STRING, 2, 3, "abc"),
