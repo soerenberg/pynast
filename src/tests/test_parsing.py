@@ -241,7 +241,7 @@ class TestParser:
         assert result == expected
 
     def test_parse_indexing(self):
-        """Test parsing indexing of the form <identifier>[a,b][c,d]."""
+        """Test parsing indexing of the form <identifier>[a,b][c,d:e]."""
         token_list = [
             Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
             Token(TokenType.LBRACK, 5, 10, "["),
@@ -253,6 +253,8 @@ class TestParser:
             Token(TokenType.IDENTIFIER, 5, 42, "var_2"),
             Token(TokenType.COMMA, 5, 48, ","),
             Token(TokenType.IDENTIFIER, 5, 50, "var_3"),
+            Token(TokenType.COLON, 5, 51, ":"),
+            Token(TokenType.IDENTIFIER, 5, 53, "var_4"),
             Token(TokenType.RBRACK, 5, 61, "]"),
             Token(TokenType.EQUALS, 5, 63, "="),
         ]
@@ -273,8 +275,11 @@ class TestParser:
             indices=[
                 expr.Variable(Token(TokenType.IDENTIFIER, 5, 42, "var_2"),
                               None),
-                expr.Variable(Token(TokenType.IDENTIFIER, 5, 50, "var_3"),
-                              None),
+                expr.Slice(
+                    expr.Variable(Token(TokenType.IDENTIFIER, 5, 50, "var_3"),
+                                  None),
+                    expr.Variable(Token(TokenType.IDENTIFIER, 5, 53, "var_4"),
+                                  None)),
             ])
 
         lexer = parsing.Parser(token_list)

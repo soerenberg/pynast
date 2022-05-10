@@ -337,13 +337,14 @@ class Parser:
         At this point it is assumed that callee and opening brackets have
         been consumed.
         """
-        # TODO parse slices
         indices = []
         if not self._check(TokenType.RBRACK):
-            indices.append(self._parse_expression())
+            expression = self._parse_slice()
+            indices.append(expression)
 
             while self._match(TokenType.COMMA):
-                indices.append(self._parse_expression())
+                expression = self._parse_slice()
+                indices.append(expression)
 
         paren = self._consume(TokenType.RBRACK, "Expect ']' after indices.")
 
