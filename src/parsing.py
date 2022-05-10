@@ -349,6 +349,15 @@ class Parser:
 
         return expr.Indexing(callee, paren, indices)
 
+    def _parse_slice(self) -> expr.Expr:
+        """Parse slice."""
+        expression = self._parse_expression()
+        if self._match(TokenType.COLON):
+            right = self._parse_expression()
+            expression = expr.Slice(left=expression, right=right)
+        return expression
+
+
     def _parse_primary(self) -> expr.Expr:
         # TODO only literals can parsed atm. False, True etc. missing.
         literal_ttypes = [
