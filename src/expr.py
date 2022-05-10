@@ -137,6 +137,7 @@ class Indexing(Expr):
 
 class Slice(Expr):
     """Array or matrix indexing slice."""
+
     def __init__(self, left: Expr, right: Expr):
         self.left = left
         self.right = right
@@ -147,41 +148,6 @@ class Slice(Expr):
     def __eq__(self, other) -> bool:
         return (isinstance(other, Slice) and self.left == other.left
                 and self.right == other.right)
-
-
-class Range(Expr):
-    """Index range expression.
-
-    Has the form <expression> ':' <expression> .
-    """
-
-    # pylint: disable=too-few-public-methods
-
-    def __init__(self, left: Optional[Expr], right: Optional[Expr]):
-        self.left = left
-        self.right = right
-
-    def accept(self, visitor: Visitor) -> Any:
-        return visitor.visit_range(self)
-
-    def __eq__(self, other) -> bool:
-        return self.left == other.left and self.right == other.right
-
-
-class Indexes(Expr):
-    """Indexes expression."""
-
-    # pylint: disable=too-few-public-methods
-
-    def __init__(self, expressions: List[Expr]):
-        self.expressions = expressions
-
-    def accept(self, visitor: Visitor) -> Any:
-        return visitor.visit_indexes(self)
-
-    def __eq__(self, other) -> bool:
-        return (isinstance(other, Indexes)
-                and self.expressions == other.expressions)
 
 
 class Variable(Expr):
@@ -231,14 +197,6 @@ class Visitor:
     @abc.abstractmethod
     def visit_slice(self, expr: Slice) -> Any:
         """Visit Slice."""
-
-    @abc.abstractmethod
-    def visit_range(self, expr: Range) -> Any:
-        """Visit Range."""
-
-    @abc.abstractmethod
-    def visit_indexes(self, expr: Indexes) -> Any:
-        """Visit Indexes."""
 
     @abc.abstractmethod
     def visit_variable(self, expr: Variable) -> Any:

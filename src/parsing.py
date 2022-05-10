@@ -79,55 +79,10 @@ class Parser:
 
         raise ParseError(self._get_current(), message or f"Expected {ttype}.")
 
-    def _parse_unary(self) -> expr.Unary:
-        if self._match_any(TokenType.BANG, TokenType.MINUS, TokenType.PLUS,
-                           TokenType.HAT):
-            operator = self._previous()
-
-            right = self._parse_unary()
-
-            return expr.Unary(operator, right)
-
-        raise ParseError(self._peek(), "Expect '!', '-', '+' or '^'.")
-
     def _parse_expression(self) -> expr.Expr:
         # <expression> ::= <lhs>
         #        | <non_lhs>
-
-        # TODO implement parsing <non_lhs>
-        return self._parse_lhs()
-
-    def _parse_lhs(self):
-        # <lhs> ::= <identifier>
-        # | <lhs> LBRACK <indexes> RBRACK
-
-        # Due to left-recursivity transformed to:
-        # <lhs> ::= <identifier> (LBRACK <indexes> RBRACK)*
-
-        if not self._check(TokenType.IDENTIFIER):
-            raise ParseError(self._get_current(),
-                             "Expect identifier or lhs expression.")
-        identifier = self._pop_token()
-
-        indexes = []
-        while self._match(TokenType.LBRACK):
-            indexes.append(self._parse_indexes())
-            self._consume(TokenType.RBRACK)
-
-        return expr.Variable(identifier, indexes)
-
-    def _parse_indexes(self) -> expr.Indexes:
-        # <indexes> ::= epsilon
-        #     | COLON
-        #     | <expression>
-        #     | <expression> COLON
-        #     | COLON <expression>
-        #     | <expression> COLON <expression>
-        #     | <indexes> COMMA <indexes>
-
-        # TODO only ':' is allowed at the moment.
-        self._consume(TokenType.COLON)
-        return expr.Indexes([expr.Range(None, None)])
+        return self._parse_precedence_10()
 
     def _parse_precedence_10(self) -> expr.Expr:
         """Precedence level 10.
@@ -330,8 +285,7 @@ class Parser:
 
         return expr.FunctionApplication(callee, paren, arguments)
 
-    def _complete_indexing(
-            self, callee: expr.Expr) -> expr.Indexing:
+    def _complete_indexing(self, callee: expr.Expr) -> expr.Indexing:
         """Finish parsing Indexing.
 
         At this point it is assumed that callee and opening brackets have
@@ -357,7 +311,6 @@ class Parser:
             right = self._parse_expression()
             expression = expr.Slice(left=expression, right=right)
         return expression
-
 
     def _parse_primary(self) -> expr.Expr:
         # TODO only literals can parsed atm. False, True etc. missing.
