@@ -117,6 +117,24 @@ class FunctionApplication(Expr):
                 and self.arguments == other.arguments)
 
 
+class Indexing(Expr):
+    """Array or matrix indexing."""
+
+    def __init__(self, callee: Expr, closing_bracket: tokens.Token,
+                 indices: List[Expr]):
+        self.callee = callee
+        self.closing_bracket = closing_bracket
+        self.indices = indices
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_indexing(self)
+
+    def __eq__(self, other) -> bool:
+        return (isinstance(other, Indexing) and self.callee == other.callee
+                and self.closing_bracket == other.closing_bracket
+                and self.indices == other.indices)
+
+
 class Range(Expr):
     """Index range expression.
 
@@ -194,6 +212,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_function_application(self, expr: FunctionApplication) -> Any:
         """Visit FunctionApplication."""
+
+    @abc.abstractmethod
+    def visit_indexing(self, expr: Indexing) -> Any:
+        """Visit Indexing."""
 
     @abc.abstractmethod
     def visit_range(self, expr: Range) -> Any:
