@@ -3,7 +3,8 @@ import pytest
 
 import expr
 import parsing
-from tokens import Token, TokenType
+import stmt
+from tokens import RealValue, Token, TokenType
 
 
 class TestParser:
@@ -313,3 +314,170 @@ class TestParser:
         result = lexer._parse_precedence_0_5()
 
         assert result == expected
+
+    @pytest.mark.parametrize("token_list,expected", [
+        ([
+            Token(TokenType.INT, 3, 2),
+            Token(TokenType.IDENTIFIER, 3, 7, "myvar"),
+            Token(TokenType.SEMICOLON, 3, 12, ";")
+        ],
+         stmt.Declaration(Token(TokenType.INT, 3, 2),
+                          Token(TokenType.IDENTIFIER, 3, 7, "myvar"))),
+        ([
+            Token(TokenType.REAL, 5, 4),
+            Token(TokenType.LABRACK, 5, 9, "<"),
+            Token(TokenType.UPPER, 5, 10, "upper"),
+            Token(TokenType.ASSIGN, 5, 18, "="),
+            Token(TokenType.REALNUMERAL, 5, 18, "2.3", RealValue(2, 3)),
+            Token(TokenType.RABRACK, 5, 9, ">"),
+            Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+            Token(TokenType.SEMICOLON, 5, 14, ";")
+        ],
+         stmt.Declaration(
+             Token(TokenType.REAL, 5, 4),
+             Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+             upper=expr.Literal(
+                 Token(TokenType.REALNUMERAL, 5, 18, "2.3", RealValue(2, 3))),
+         )),
+        ([
+            Token(TokenType.REAL, 5, 4),
+            Token(TokenType.LABRACK, 5, 9, "<"),
+            Token(TokenType.UPPER, 5, 10, "upper"),
+            Token(TokenType.ASSIGN, 5, 18, "="),
+            Token(TokenType.REALNUMERAL, 5, 18, "2.3", RealValue(2, 3)),
+            Token(TokenType.COMMA, 5, 20, ","),
+            Token(TokenType.LOWER, 5, 22, "lower"),
+            Token(TokenType.ASSIGN, 5, 23, "="),
+            Token(TokenType.INTNUMERAL, 5, 18, "-1", RealValue(-1)),
+            Token(TokenType.RABRACK, 5, 9, ">"),
+            Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+            Token(TokenType.SEMICOLON, 5, 14, ";")
+        ],
+         stmt.Declaration(
+             Token(TokenType.REAL, 5, 4),
+             Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+             lower=expr.Literal(
+                 Token(TokenType.INTNUMERAL, 5, 18, "-1", RealValue(-1))),
+             upper=expr.Literal(
+                 Token(TokenType.REALNUMERAL, 5, 18, "2.3", RealValue(2, 3))),
+         )),
+        ([
+            Token(TokenType.REAL, 5, 4),
+            Token(TokenType.LABRACK, 5, 9, "<"),
+            Token(TokenType.LOWER, 5, 10, "lower"),
+            Token(TokenType.ASSIGN, 5, 18, "="),
+            Token(TokenType.REALNUMERAL, 5, 18, "-2.3", RealValue(-2, 3)),
+            Token(TokenType.COMMA, 5, 20, ","),
+            Token(TokenType.UPPER, 5, 22, "upper"),
+            Token(TokenType.ASSIGN, 5, 23, "="),
+            Token(TokenType.INTNUMERAL, 5, 18, "11", RealValue(11)),
+            Token(TokenType.RABRACK, 5, 9, ">"),
+            Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+            Token(TokenType.SEMICOLON, 5, 14, ";")
+        ],
+         stmt.Declaration(
+             Token(TokenType.REAL, 5, 4),
+             Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+             lower=expr.Literal(
+                 Token(TokenType.REALNUMERAL, 5, 18, "-2.3", RealValue(-2,
+                                                                       3))),
+             upper=expr.Literal(
+                 Token(TokenType.INTNUMERAL, 5, 18, "11", RealValue(11))),
+         )),
+        ([
+            Token(TokenType.REAL, 5, 4),
+            Token(TokenType.LABRACK, 5, 9, "<"),
+            Token(TokenType.OFFSET, 5, 10, "offset"),
+            Token(TokenType.ASSIGN, 5, 18, "="),
+            Token(TokenType.REALNUMERAL, 5, 18, "-2.3", RealValue(-2, 3)),
+            Token(TokenType.COMMA, 5, 20, ","),
+            Token(TokenType.MULTIPLIER, 5, 22, "multiplier"),
+            Token(TokenType.ASSIGN, 5, 23, "="),
+            Token(TokenType.INTNUMERAL, 5, 18, "11", RealValue(11)),
+            Token(TokenType.RABRACK, 5, 9, ">"),
+            Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+            Token(TokenType.ASSIGN, 5, 25, "="),
+            Token(TokenType.REALNUMERAL, 5, 30, "3.14", RealValue(3, 14)),
+            Token(TokenType.SEMICOLON, 5, 14, ";")
+        ],
+         stmt.Declaration(
+             Token(TokenType.REAL, 5, 4),
+             Token(TokenType.IDENTIFIER, 5, 9, "my_var"),
+             offset=expr.Literal(
+                 Token(TokenType.REALNUMERAL, 5, 18, "-2.3", RealValue(-2,
+                                                                       3))),
+             multiplier=expr.Literal(
+                 Token(TokenType.INTNUMERAL, 5, 18, "11", RealValue(11))),
+             initializer=expr.Literal(
+                 Token(TokenType.REALNUMERAL, 5, 30, "3.14", RealValue(3,
+                                                                       14))),
+         )),
+    ])
+    def test_parse_declaration(self, token_list, expected):
+        """Test Parser._parse_declaration."""
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_declaration()
+
+        assert result == expected
+
+    @pytest.mark.parametrize("token_list", [
+        [
+            Token(TokenType.REAL, 5, 4),
+            Token(TokenType.LABRACK, 5, 9, "<"),
+            Token(TokenType.OFFSET, 5, 10, "offset"),
+            Token(TokenType.ASSIGN, 5, 18, "="),
+            Token(TokenType.REALNUMERAL, 5, 18, "-2.3", RealValue(-2, 3)),
+            Token(TokenType.COMMA, 5, 20, ","),
+            Token(TokenType.OFFSET, 5, 22, "offset"),
+            Token(TokenType.ASSIGN, 5, 23, "="),
+            Token(TokenType.INTNUMERAL, 5, 18, "11", RealValue(11)),
+            Token(TokenType.RABRACK, 5, 9, ">"),
+        ],
+        [
+            Token(TokenType.REAL, 5, 4),
+            Token(TokenType.LABRACK, 5, 9, "<"),
+            Token(TokenType.LOWER, 5, 10, "lower"),
+            Token(TokenType.ASSIGN, 5, 18, "="),
+            Token(TokenType.REALNUMERAL, 5, 18, "-2.3", RealValue(-2, 3)),
+            Token(TokenType.COMMA, 5, 20, ","),
+            Token(TokenType.UPPER, 5, 22, "upper"),
+            Token(TokenType.ASSIGN, 5, 23, "="),
+            Token(TokenType.INTNUMERAL, 5, 18, "11", RealValue(11)),
+            Token(TokenType.COMMA, 5, 20, ","),
+            Token(TokenType.UPPER, 5, 22, "upper"),
+            Token(TokenType.ASSIGN, 5, 23, "="),
+            Token(TokenType.INTNUMERAL, 5, 18, "11", RealValue(11)),
+            Token(TokenType.RABRACK, 5, 9, ">"),
+        ],
+    ])
+    def test_parse_declaration_multiple_modifier_raises(self, token_list):
+        """Test that repeating a keyword ('upper', ...) raises ParseError."""
+        lexer = parsing.Parser(token_list)
+        with pytest.raises(parsing.ParseError):
+            _ = lexer._parse_declaration()
+
+    @pytest.mark.parametrize("token_list", [[
+        Token(TokenType.REAL, 5, 4),
+        Token(TokenType.LABRACK, 5, 9, "<"),
+        Token(TokenType.RABRACK, 5, 9, ">"),
+    ]])
+    def test_parse_declaration_empty_constraints_raises(self, token_list):
+        """Test that empty constraints ('int<> name;') raises ParseError."""
+        lexer = parsing.Parser(token_list)
+        with pytest.raises(parsing.ParseError):
+            _ = lexer._parse_declaration()
+
+    @pytest.mark.parametrize("token_list,ttype_0,ttype_1", [
+        ([Token(TokenType.RETURN, 5, 22, "return")
+          ], TokenType.OFFSET, TokenType.MULTIPLIER),
+        ([Token(TokenType.RETURN, 5, 22, "return")
+          ], TokenType.LOWER, TokenType.UPPER),
+    ])
+    def test_parse_var_constraint_wrong_keyword_raises(self, token_list,
+                                                       ttype_0, ttype_1):
+        """Test invalid modifier ('int<foo=..> name;') raises ParseError."""
+        lexer = parsing.Parser(token_list)
+
+        with pytest.raises(parsing.ParseError):
+            _ = lexer._parse_var_constraint(ttype_0, ttype_1)

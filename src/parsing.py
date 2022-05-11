@@ -1,8 +1,9 @@
 """Stan parser."""
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 from tokens import Token, TokenType
 
 import expr
+import stmt
 
 
 class ParseError(Exception):
@@ -332,3 +333,79 @@ class Parser:
             return expr.Variable(self._previous())
 
         raise ParseError(self._get_current(), "")
+
+    def _parse_var_constraint(self, ttype_0: TokenType, ttype_1: TokenType):
+        constraints: Dict[str, Optional[expr.Expr]] = {
+            ttype_0.name.lower(): None,
+            ttype_1.name.lower(): None
+        }
+
+        while True:
+            if not self._match_any(ttype_0, ttype_1):
+                raise ParseError(
+                    self._get_current(), f"Expected '{ttype_0.name.lower()}' "
+                    f"or '{ttype_1.name.lower()}', but found "
+                    f"'{self._get_current().lexeme}'.")
+            modifier = self._previous()
+            name = modifier.ttype.name.lower()
+
+            self._consume(TokenType.ASSIGN, f"Expect '=' after {name}.")
+
+            if constraints[name] is not None:
+                raise ParseError(modifier, f"Multiple definition of {name}.")
+            constraints[name] = self._parse_precedence_5()
+
+            if not self._match(TokenType.COMMA):
+                break
+
+        return constraints
+
+    def _parse_declaration(self) -> stmt.Stmt:
+        if self._match_any(TokenType.INT, TokenType.REAL, TokenType.COMPLEX,
+                           TokenType.VECTOR, TokenType.ROWVECTOR,
+                           TokenType.MATRIX, TokenType.ORDERED,
+                           TokenType.POSITIVEORDERED, TokenType.SIMPLEX,
+                           TokenType.UNITVECTOR, TokenType.CHOLESKYFACTORCORR,
+                           TokenType.CHOLESKYFACTORCOV, TokenType.CORRMATRIX,
+                           TokenType.COVMATRIX):
+            ttype = self._previous()
+
+            kwargs = dict(lower=None, upper=None, offset=None, multiplier=None)
+
+            if self._match(TokenType.LABRACK):
+                if self._check_any(TokenType.OFFSET, TokenType.MULTIPLIER):
+                    kwargs |= self._parse_var_constraint(
+                        TokenType.OFFSET, TokenType.MULTIPLIER)
+                elif self._check_any(TokenType.LOWER, TokenType.UPPER):
+                    kwargs |= self._parse_var_constraint(
+                        TokenType.LOWER, TokenType.UPPER)
+                else:
+                    expected_keywords = ', '.join([
+                        ttype.name.lower() for ttype in [
+                            TokenType.MULTIPLIER, TokenType.OFFSET,
+                            TokenType.LOWER, TokenType.UPPER
+                        ]
+                    ])
+                    raise ParseError(self._get_current(),
+                                     f"Expected {expected_keywords}.")
+
+                self._consume(TokenType.RABRACK,
+                              "Expect '>' after var constraints.")
+
+            identifier = self._consume(TokenType.IDENTIFIER,
+                                       "Expect identifier in declaration.")
+
+            # TODO parse 'dims' here
+
+            initializer = None
+            if self._match(TokenType.ASSIGN):
+                initializer = self._parse_expression()
+
+            self._consume(TokenType.SEMICOLON, "Expect ';' after declaration.")
+
+            return stmt.Declaration(ttype=ttype,
+                                    identifier=identifier,
+                                    initializer=initializer,
+                                    **kwargs)
+
+        raise NotImplementedError("_parse_declaration")
