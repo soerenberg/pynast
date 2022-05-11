@@ -64,7 +64,8 @@ class Parser:
         """Check if current token has TokenType, but not consume."""
         return self._check_any(ttype)
 
-    def _match_any(self, *args) -> bool:
+    def _match_any(self, *args: TokenType) -> bool:
+        """Check if current has one of given TokenTypes, consume if it does."""
         for ttype in args:
             if self._check(ttype):
                 self._pop_token()
@@ -72,7 +73,7 @@ class Parser:
         return False
 
     def _match(self, ttype: TokenType) -> bool:
-        """Short form for _match_any with only one argument."""
+        """Check if current has TokenType, and consume if it does."""
         return self._match_any(ttype)
 
     def _consume(self,
