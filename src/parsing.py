@@ -53,11 +53,16 @@ class Parser:
         """Return previous token."""
         return self._token_list[self._current - 1]
 
-    def _check(self, ttype: TokenType) -> bool:
+    def _check_any(self, *args: TokenType) -> bool:
+        """Check if current token has 1 of given TokenTypes, but not consume."""
         if self._is_at_end():
             return False
 
-        return self._peek().ttype == ttype
+        return self._peek().ttype in args
+
+    def _check(self, ttype: TokenType) -> bool:
+        """Check if current token has TokenType, but not consume."""
+        return self._check_any(ttype)
 
     def _match_any(self, *args) -> bool:
         for ttype in args:

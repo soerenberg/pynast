@@ -40,20 +40,33 @@ class TestParser:
         assert lexer._current == expected
 
     @pytest.mark.parametrize(
-        "ttype,peek_token,is_at_end,expected",
-        [(TokenType.BANG, Token(TokenType.BANG, 2, 3), False, True),
-         (TokenType.BANG, Token(TokenType.BANG, 1, 1), True, False),
-         (TokenType.SEMICOLON, Token(TokenType.COLON, 3, 8), False, False),
-         (TokenType.SEMICOLON, Token(TokenType.COLON, 9, 7), True, False)])
-    def test_check(self, lexer, ttype, peek_token, is_at_end, expected,
-                   mocker):
-        """Test Scanner._check"""
+        "args,peek_token,is_at_end,expected",
+        [([TokenType.PLUS, TokenType.BANG], Token(TokenType.BANG, 2, 3),
+          False, True),
+         ([TokenType.BANG, TokenType.PLUS], Token(TokenType.BANG, 1, 1),
+          True, False),
+         ([TokenType.SEMICOLON, TokenType.AND], Token(TokenType.COLON, 3, 8),
+          False, False),
+         ([TokenType.OR, TokenType.SEMICOLON], Token(TokenType.COLON, 9, 7),
+          True, False)])  # yapf: disable
+    def test_check_any(self, lexer, args, peek_token, is_at_end, expected,
+                       mocker):
+        """Test Parser._check"""
         mocker.patch.object(lexer, "_is_at_end", return_value=is_at_end)
         mocker.patch.object(lexer, "_peek", return_value=peek_token)
 
-        result = lexer._check(ttype)
+        result = lexer._check_any(*args)
 
         assert result == expected
+
+    def test_check(self, lexer, mocker):
+        """Test Parser._check."""
+        mocker.patch.object(lexer, "_check_any")
+        mocked_ttype = mocker.Mock()
+
+        _ = lexer._check(mocked_ttype)
+
+        lexer._check_any.assert_called_once_with(mocked_ttype)
 
     @pytest.mark.parametrize(
         "ttypes,check_ttype,expected",
