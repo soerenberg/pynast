@@ -135,8 +135,8 @@ class Token(NamedTuple):
 class RealValue(NamedTuple):
     """Datatype for parsed real literals."""
     integer_part: int
-    non_integer_part: int
-    exponent: int
+    non_integer_part: int = 1
+    exponent: int = 1
 
 
 class ComplexValue(NamedTuple):
