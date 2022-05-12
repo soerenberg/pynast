@@ -468,6 +468,64 @@ class TestParser:
         with pytest.raises(parsing.ParseError):
             _ = lexer._parse_declaration()
 
+    @pytest.mark.parametrize("ttype", [TokenType.INT, TokenType.REAL])
+    def test_parse_type_dims_0(self, ttype):
+        """Test Parser._parse_type_dims for scalar types."""
+
+        lexer = parsing.Parser([])
+        expected = []
+
+        result = lexer._parse_type_dims(ttype)
+
+        assert result == expected
+
+    @pytest.mark.parametrize("ttype", [
+        TokenType.VECTOR, TokenType.ORDERED, TokenType.POSITIVEORDERED,
+        TokenType.SIMPLEX, TokenType.UNITVECTOR, TokenType.ROWVECTOR,
+        TokenType.CHOLESKYFACTORCORR, TokenType.CORRMATRIX,
+        TokenType.COVMATRIX, TokenType.CHOLESKYFACTORCOV
+    ])
+    def test_parse_type_dims_1(self, ttype, mocker):
+        """Test Parser._parse_type_dims for 1-dim types."""
+
+        token_list = [
+            Token(TokenType.LBRACK, 1, 2, "["),
+            Token(TokenType.RBRACK, 1, 5, "]"),
+        ]
+
+        lexer = parsing.Parser(token_list)
+        mocked_expression = mocker.Mock()
+        mocker.patch.object(lexer,
+                            "_parse_expression",
+                            return_value=mocked_expression)
+        expected = [mocked_expression]
+
+        result = lexer._parse_type_dims(ttype)
+
+        assert result == expected
+
+    @pytest.mark.parametrize("ttype",
+                             [TokenType.MATRIX, TokenType.CHOLESKYFACTORCOV])
+    def test_parse_type_dims_2(self, ttype, mocker):
+        """Test Parser._parse_type_dims for 2-dim types."""
+
+        token_list = [
+            Token(TokenType.LBRACK, 1, 2, "["),
+            Token(TokenType.COMMA, 1, 3, ","),
+            Token(TokenType.RBRACK, 1, 5, "]"),
+        ]
+
+        lexer = parsing.Parser(token_list)
+        mocked_expressions = [mocker.Mock(), mocker.Mock()]
+        mocker.patch.object(lexer,
+                            "_parse_expression",
+                            side_effect=mocked_expressions)
+        expected = list(mocked_expressions)
+
+        result = lexer._parse_type_dims(ttype)
+
+        assert result == expected
+
     @pytest.mark.parametrize("token_list,ttype_0,ttype_1", [
         ([Token(TokenType.RETURN, 5, 22, "return")
           ], TokenType.OFFSET, TokenType.MULTIPLIER),

@@ -335,6 +335,27 @@ class Parser:
         raise ParseError(self._get_current(), "")
 
     def _parse_var_constraint(self, ttype_0: TokenType, ttype_1: TokenType):
+
+    def _parse_type_dims(self, ttype: TokenType) -> List[expr.Expr]:
+        type_dims = []
+        if ttype in ONE_DIM_VAR_TYPES:
+            self._consume(TokenType.LBRACK, "Expected '['.")
+            type_dims.append(self._parse_expression())
+            self._consume(TokenType.RBRACK, "Expected ']'.")
+        elif ttype in TWO_DIM_VAR_TYPES:
+            self._consume(TokenType.LBRACK, "Expected '['.")
+            type_dims.append(self._parse_expression())
+            self._consume(TokenType.COMMA, "Expected ','.")
+            type_dims.append(self._parse_expression())
+            self._consume(TokenType.RBRACK, "Expected ']'.")
+        elif ttype in OPT_TWO_DIM_VAR_TYPES:
+            self._consume(TokenType.LBRACK, "Expected '['.")
+            type_dims.append(self._parse_expression())
+            if self._match(TokenType.COMMA):
+                type_dims.append(self._parse_expression())
+            self._consume(TokenType.RBRACK, "Expected ']'.")
+
+        return type_dims
         constraints: Dict[str, Optional[expr.Expr]] = {
             ttype_0.name.lower(): None,
             ttype_1.name.lower(): None
