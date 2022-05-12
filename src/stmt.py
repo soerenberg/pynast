@@ -1,7 +1,7 @@
 """Statement nodes for ASTs."""
 from __future__ import annotations
 import abc
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 import expr
 import tokens
@@ -25,6 +25,7 @@ class Declaration(Stmt):
     def __init__(self,
                  dtype: tokens.Token,
                  identifier: tokens.Token,
+                 type_dims: Optional[List[expr.Expr]] = None,
                  lower: Optional[expr.Expr] = None,
                  upper: Optional[expr.Expr] = None,
                  offset: Optional[expr.Expr] = None,
@@ -33,6 +34,7 @@ class Declaration(Stmt):
         # pylint: disable=too-many-arguments
         self.dtype = dtype
         self.identifier = identifier
+        self.type_dims = type_dims or []
         self.lower = lower
         self.upper = upper
         self.offset = offset
@@ -45,6 +47,7 @@ class Declaration(Stmt):
     def __eq__(self, other):
         return (isinstance(other, Declaration) and self.dtype == other.dtype
                 and self.identifier == other.identifier
+                and self.type_dims == other.type_dims
                 and self.lower == other.lower and self.upper == other.upper
                 and self.offset == other.offset
                 and self.multiplier == other.multiplier
