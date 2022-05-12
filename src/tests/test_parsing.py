@@ -412,6 +412,48 @@ class TestParser:
                  Token(TokenType.REALNUMERAL, 5, 30, "3.14", RealValue(3,
                                                                        14))),
          )),
+        ([
+            Token(TokenType.VECTOR, 8, 3, "vector"),
+            Token(TokenType.LBRACK, 8, 11, "["),
+            Token(TokenType.INTNUMERAL, 8, 12, "3", RealValue(3)),
+            Token(TokenType.RBRACK, 8, 13, "]"),
+            Token(TokenType.IDENTIFIER, 8, 15, "my_var"),
+            Token(TokenType.SEMICOLON, 8, 22, ";"),
+        ],
+         stmt.Declaration(Token(TokenType.VECTOR, 8, 3, "vector"),
+                          Token(TokenType.IDENTIFIER, 8, 15, "my_var"),
+                          type_dims=[
+                              expr.Literal(
+                                  Token(TokenType.INTNUMERAL, 8, 12, "3",
+                                        RealValue(3)))
+                          ])),
+        ([
+            Token(TokenType.MATRIX, 8, 3, "matrix"),
+            Token(TokenType.LABRACK, 8, 9, "<"),
+            Token(TokenType.UPPER, 8, 10, "upper"),
+            Token(TokenType.ASSIGN, 8, 18, "="),
+            Token(TokenType.REALNUMERAL, 8, 18, "2.3", RealValue(2, 3)),
+            Token(TokenType.RABRACK, 8, 9, ">"),
+            Token(TokenType.LBRACK, 8, 11, "["),
+            Token(TokenType.INTNUMERAL, 8, 12, "3", RealValue(3)),
+            Token(TokenType.COMMA, 8, 13, ","),
+            Token(TokenType.INTNUMERAL, 8, 14, "4", RealValue(4)),
+            Token(TokenType.RBRACK, 8, 15, "]"),
+            Token(TokenType.IDENTIFIER, 8, 17, "my_var"),
+            Token(TokenType.SEMICOLON, 8, 22, ";"),
+        ],
+         stmt.Declaration(
+             Token(TokenType.MATRIX, 8, 3, "matrix"),
+             Token(TokenType.IDENTIFIER, 8, 17, "my_var"),
+             type_dims=[
+                 expr.Literal(
+                     Token(TokenType.INTNUMERAL, 8, 12, "3", RealValue(3))),
+                 expr.Literal(
+                     Token(TokenType.INTNUMERAL, 8, 14, "4", RealValue(4)))
+             ],
+             upper=expr.Literal(
+                 Token(TokenType.REALNUMERAL, 8, 18, "2.3", RealValue(2,
+                                                                      3))))),
     ])
     def test_parse_declaration(self, token_list, expected):
         """Test Parser._parse_declaration."""
@@ -538,4 +580,4 @@ class TestParser:
         lexer = parsing.Parser(token_list)
 
         with pytest.raises(parsing.ParseError):
-            _ = lexer._parse_var_constraint(ttype_0, ttype_1)
+            _ = lexer._parse_var_constraints(ttype_0, ttype_1)
