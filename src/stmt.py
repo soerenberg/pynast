@@ -23,7 +23,7 @@ class Declaration(Stmt):
     # pylint: disable=too-few-public-methods
 
     def __init__(self,
-                 ttype: tokens.Token,
+                 dtype: tokens.Token,
                  identifier: tokens.Token,
                  lower: Optional[expr.Expr] = None,
                  upper: Optional[expr.Expr] = None,
@@ -31,7 +31,7 @@ class Declaration(Stmt):
                  multiplier: Optional[expr.Expr] = None,
                  initializer: Optional[expr.Expr] = None):
         # pylint: disable=too-many-arguments
-        self.ttype = ttype
+        self.dtype = dtype
         self.identifier = identifier
         self.lower = lower
         self.upper = upper
@@ -43,7 +43,7 @@ class Declaration(Stmt):
         return visitor.visit_declaration(self)
 
     def __eq__(self, other):
-        return (isinstance(other, Declaration) and self.ttype == other.ttype
+        return (isinstance(other, Declaration) and self.dtype == other.dtype
                 and self.identifier == other.identifier
                 and self.lower == other.lower and self.upper == other.upper
                 and self.offset == other.offset
