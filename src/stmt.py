@@ -85,6 +85,19 @@ class Break(Stmt):
         return (isinstance(other, Break) and self.keyword == other.keyword)
 
 
+class Continue(Stmt):
+    """continue statement."""
+
+    def __init__(self, keyword: tokens.Token):
+        self.keyword = keyword
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_break(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Continue) and self.keyword == other.keyword)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -101,3 +114,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_break(self, statement: Break) -> Any:
         """Visit Break."""
+
+    @abc.abstractmethod
+    def visit_continue(self, statement: Continue) -> Any:
+        """Visit Continue."""
