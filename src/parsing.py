@@ -515,6 +515,11 @@ class Parser:
         return constraints
 
     def _parse_atomic_statement(self):
+        if self._match(TokenType.BREAK):
+            keyword = self._previous()
+            self._consume(TokenType.SEMICOLON, "Expect ';' after 'break'.")
+            return stmt.Break(keyword)
+
         expression = self._parse_expression()
 
         if self._match_any(*ASSIGNMENT_OPS):

@@ -670,6 +670,10 @@ class TestParser:
                      expr.Literal(
                          Token(TokenType.INTNUMERAL, 2, 22, "2", RealValue(2)))
                  ])),
+        ([
+            Token(TokenType.BREAK, 3, 5, "break"),
+            Token(TokenType.SEMICOLON, 3, 9, ";")
+        ], stmt.Break(Token(TokenType.BREAK, 3, 5, "break"))),
     ])
     def test_parse_atomic_statement(self, token_list, expected):
         """Test Parser._parse_atomic_statement."""
