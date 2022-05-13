@@ -74,6 +74,24 @@ class Assign(Stmt):
                 and self.value == other.value)
 
 
+class Tilde(Stmt):
+    """Tilde statement to increase log probability."""
+
+    def __init__(self, lhs: expr.Expr, identifier: tokens.Token,
+                 args: List[expr.Expr]):
+        self.lhs = lhs
+        self.identifier = identifier
+        self.args = args
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_tilde(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Tilde) and self.lhs == other.lhs
+                and self.identifier == other.identifier
+                and self.args == other.args)
+
+
 class IncrementLogProb(Stmt):
     """increment_log_prob statement, deprecated in Stan 3."""
 
@@ -128,6 +146,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_assign(self, statement: Assign) -> Any:
         """Visit Assign."""
+
+    @abc.abstractmethod
+    def visit_tilde(self, statement: Tilde) -> Any:
+        """Visit Tilde."""
 
     @abc.abstractmethod
     def visit_increment_log_prob(self, statement: IncrementLogProb) -> Any:
