@@ -72,6 +72,19 @@ class IncrementLogProb(Stmt):
                 and self.value == other.value)
 
 
+class Break(Stmt):
+    """break statement."""
+
+    def __init__(self, keyword: tokens.Token):
+        self.keyword = keyword
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_break(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Break) and self.keyword == other.keyword)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -84,3 +97,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_increment_log_prob(self, statement: IncrementLogProb) -> Any:
         """Visit IncrementLogProb."""
+
+    @abc.abstractmethod
+    def visit_break(self, statement: Break) -> Any:
+        """Visit Break."""
