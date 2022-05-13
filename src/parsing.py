@@ -51,6 +51,17 @@ OFFSET_MULTIPLIER_CONSTRAINT_VAR_TYPES = [
     TokenType.MATRIX,
 ]
 
+ASSIGNMENT_OPS = [
+    TokenType.ASSIGN,
+    TokenType.ARROWASSIGN,
+    TokenType.PLUSASSIGN,
+    TokenType.MINUSASSIGN,
+    TokenType.TIMESASSIGN,
+    TokenType.DIVIDEASSIGN,
+    TokenType.ELTTIMESASSIGN,
+    TokenType.ELTDIVIDEASSIGN,
+]
+
 
 class ParseError(Exception):
     """Parse exception."""
@@ -502,3 +513,27 @@ class Parser:
                 break
 
         return constraints
+
+    def _parse_atomic_statement(self):
+        expression = self._parse_expression()
+
+        if self._match_any(*ASSIGNMENT_OPS):
+            assignment_op = self._previous()
+            value = self._parse_expression()
+
+            return stmt.Assign(expression, assignment_op, value)
+        elif self._match(TokenType.TILDE):
+            identifier = self._consume(TokenType.IDENTIFIER,
+                                       "Expect identifier after '~'.")
+            self._consume(TokenType.LPAREN, "Expect '('.")
+            args = []
+            while True:
+                args.append(self._parse_expression())
+                if not self._match(TokenType.COMMA):
+                    break
+            self._consume(TokenType.RPAREN, "Expect ')'.")
+
+            # TODO parse truncation here
+            self._consume(TokenType.SEMICOLON, "Expect ';'.")
+
+            return stmt.Tilde(expression, identifier, args)

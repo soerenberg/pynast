@@ -622,3 +622,59 @@ class TestParser:
 
         with pytest.raises(parsing.ParseError):
             _ = lexer._parse_array_dims()
+
+    @pytest.mark.parametrize("token_list,expected", [
+        ([
+            Token(TokenType.IDENTIFIER, 2, 3, "my_var"),
+            Token(TokenType.LBRACK, 2, 9, "["),
+            Token(TokenType.INTNUMERAL, 2, 10, "3", RealValue(3)),
+            Token(TokenType.RBRACK, 2, 11, "]"),
+            Token(TokenType.ASSIGN, 2, 14, "="),
+            Token(TokenType.REALNUMERAL, 2, 18, "8.1", RealValue(8, 1)),
+            Token(TokenType.SEMICOLON, 2, 22, ";"),
+        ],
+         stmt.Assign(
+             expr.Indexing(
+                 expr.Variable(Token(TokenType.IDENTIFIER, 2, 3, "my_var")),
+                 Token(TokenType.RBRACK, 2, 11, "]"), [
+                     expr.Literal(
+                         Token(TokenType.INTNUMERAL, 2, 10, "3", RealValue(3)))
+                 ]), Token(TokenType.ASSIGN, 2, 14, "="),
+             expr.Literal(
+                 Token(TokenType.REALNUMERAL, 2, 18, "8.1", RealValue(8,
+                                                                      1))))),
+        ([
+            Token(TokenType.IDENTIFIER, 2, 3, "my_var"),
+            Token(TokenType.LBRACK, 2, 9, "["),
+            Token(TokenType.INTNUMERAL, 2, 10, "3", RealValue(3)),
+            Token(TokenType.RBRACK, 2, 11, "]"),
+            Token(TokenType.TILDE, 2, 14, "~"),
+            Token(TokenType.IDENTIFIER, 2, 15, "normal"),
+            Token(TokenType.LPAREN, 2, 17, "("),
+            Token(TokenType.REALNUMERAL, 2, 18, "8.1", RealValue(8, 1)),
+            Token(TokenType.COMMA, 2, 20, ","),
+            Token(TokenType.INTNUMERAL, 2, 22, "2", RealValue(2)),
+            Token(TokenType.RPAREN, 2, 23, ")"),
+            Token(TokenType.SEMICOLON, 2, 24, ";"),
+        ],
+         stmt.Tilde(
+             expr.Indexing(
+                 expr.Variable(Token(TokenType.IDENTIFIER, 2, 3, "my_var")),
+                 Token(TokenType.RBRACK, 2, 11, "]"), [
+                     expr.Literal(
+                         Token(TokenType.INTNUMERAL, 2, 10, "3", RealValue(3)))
+                 ]), Token(TokenType.IDENTIFIER, 2, 15, "normal"), [
+                     expr.Literal(
+                         Token(TokenType.REALNUMERAL, 2, 18, "8.1",
+                               RealValue(8, 1))),
+                     expr.Literal(
+                         Token(TokenType.INTNUMERAL, 2, 22, "2", RealValue(2)))
+                 ])),
+    ])
+    def test_parse_atomic_statement(self, token_list, expected):
+        """Test Parser._parse_atomic_statement."""
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_atomic_statement()
+
+        assert result == expected
