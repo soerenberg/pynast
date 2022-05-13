@@ -581,3 +581,33 @@ class TestParser:
 
         with pytest.raises(parsing.ParseError):
             _ = lexer._parse_var_constraints(ttype_0, ttype_1)
+
+    @pytest.mark.parametrize("num_dims", [1, 2, 5])
+    def test_parse_array_dims(self, num_dims, mocker):
+        """Test Parser._parse_array_dims."""
+        token_list = ([Token(TokenType.LBRACK, 1, 2, "[")] + [
+            Token(TokenType.COMMA, 1, 8 * i, ",") for i in range(1, num_dims)
+        ] + [Token(TokenType.RBRACK, 1, 5, "]")])
+
+        lexer = parsing.Parser(token_list)
+        mocked_expressions = [mocker.Mock() for _ in range(num_dims)]
+        mocker.patch.object(lexer,
+                            "_parse_expression",
+                            side_effect=mocked_expressions)
+        expected = list(mocked_expressions)
+
+        result = lexer._parse_array_dims()
+
+        assert result == expected
+
+    def test_parse_array_dims_empty_raises(self, mocker):
+        """Test that empty array dimensions, e.g., `[]`, raise a ParseError."""
+        token_list = [
+            Token(TokenType.LBRACK, 1, 2, "["),
+            Token(TokenType.RBRACK, 1, 5, "]"),
+        ]
+
+        lexer = parsing.Parser(token_list)
+
+        with pytest.raises(parsing.ParseError):
+            _ = lexer._parse_array_dims()

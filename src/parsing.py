@@ -429,6 +429,21 @@ class Parser:
 
         return type_dims
 
+    def _parse_array_dims(self) -> List[expr.Expr]:
+        array_dims = []
+
+        if self._match(TokenType.LBRACK):
+            while True:
+                array_dims.append(self._parse_expression())
+
+                if not self._match(TokenType.COMMA):
+                    break
+
+            self._consume(TokenType.RBRACK,
+                          "Expected ']' after array dimensions.")
+
+        return array_dims
+
     def _parse_lower_upper_offset_multiplier(self,
                                              dtype: Token) -> VarConstraints:
         kwargs: Dict[str, Optional[expr.Expr]] = dict(lower=None,
