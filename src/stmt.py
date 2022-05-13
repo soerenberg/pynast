@@ -56,6 +56,24 @@ class Declaration(Stmt):
                 and self.initializer == other.initializer)
 
 
+class Assign(Stmt):
+    """Assignment statement."""
+
+    def __init__(self, lhs: expr.Expr, assignment_op: tokens.Token,
+                 value: expr.Expr):
+        self.lhs = lhs
+        self.assignment_op = assignment_op
+        self.value = value
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_assign(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Assign) and self.lhs == other.lhs
+                and self.assignment_op == other.assignment_op
+                and self.value == other.value)
+
+
 class IncrementLogProb(Stmt):
     """increment_log_prob statement, deprecated in Stan 3."""
 
@@ -106,6 +124,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_declaration(self, statement: Declaration) -> Any:
         """Visit Declaration."""
+
+    @abc.abstractmethod
+    def visit_assign(self, statement: Assign) -> Any:
+        """Visit Assign."""
 
     @abc.abstractmethod
     def visit_increment_log_prob(self, statement: IncrementLogProb) -> Any:
