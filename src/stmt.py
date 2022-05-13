@@ -56,6 +56,22 @@ class Declaration(Stmt):
                 and self.initializer == other.initializer)
 
 
+class IncrementLogProb(Stmt):
+    """increment_log_prob statement, deprecated in Stan 3."""
+
+    def __init__(self, keyword: tokens.Token, value: expr.Expr):
+        self.keyword = keyword
+        self.value = value
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_increment_log_prob(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, IncrementLogProb)
+                and self.keyword == other.keyword
+                and self.value == other.value)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -64,3 +80,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_declaration(self, statement: Declaration) -> Any:
         """Visit Declaration."""
+
+    @abc.abstractmethod
+    def visit_increment_log_prob(self, statement: IncrementLogProb) -> Any:
+        """Visit IncrementLogProb."""
