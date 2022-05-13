@@ -394,7 +394,7 @@ class Parser:
         identifier = self._consume(TokenType.IDENTIFIER,
                                    "Expect identifier in declaration.")
 
-        # TODO parse 'dims' here
+        array_dims = self._parse_array_dims()
 
         initializer = None
         if self._match(TokenType.ASSIGN):
@@ -405,6 +405,7 @@ class Parser:
         return stmt.Declaration(dtype=dtype,
                                 identifier=identifier,
                                 type_dims=type_dims,
+                                array_dims=array_dims,
                                 initializer=initializer,
                                 **var_constraints._asdict())
 

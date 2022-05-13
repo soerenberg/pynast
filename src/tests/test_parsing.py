@@ -418,15 +418,26 @@ class TestParser:
             Token(TokenType.INTNUMERAL, 8, 12, "3", RealValue(3)),
             Token(TokenType.RBRACK, 8, 13, "]"),
             Token(TokenType.IDENTIFIER, 8, 15, "my_var"),
-            Token(TokenType.SEMICOLON, 8, 22, ";"),
+            Token(TokenType.LBRACK, 8, 18, "["),
+            Token(TokenType.INTNUMERAL, 8, 22, "3", RealValue(3)),
+            Token(TokenType.COMMA, 8, 23, "3", ","),
+            Token(TokenType.INTNUMERAL, 8, 27, "3", RealValue(4)),
+            Token(TokenType.RBRACK, 8, 33, "]"),
+            Token(TokenType.SEMICOLON, 8, 32, ";"),
         ],
-         stmt.Declaration(Token(TokenType.VECTOR, 8, 3, "vector"),
-                          Token(TokenType.IDENTIFIER, 8, 15, "my_var"),
-                          type_dims=[
-                              expr.Literal(
-                                  Token(TokenType.INTNUMERAL, 8, 12, "3",
-                                        RealValue(3)))
-                          ])),
+         stmt.Declaration(
+             Token(TokenType.VECTOR, 8, 3, "vector"),
+             Token(TokenType.IDENTIFIER, 8, 15, "my_var"),
+             type_dims=[
+                 expr.Literal(
+                     Token(TokenType.INTNUMERAL, 8, 12, "3", RealValue(3)))
+             ],
+             array_dims=[
+                 expr.Literal(
+                     Token(TokenType.INTNUMERAL, 8, 22, "3", RealValue(3))),
+                 expr.Literal(
+                     Token(TokenType.INTNUMERAL, 8, 27, "4", RealValue(4)))
+             ])),
         ([
             Token(TokenType.MATRIX, 8, 3, "matrix"),
             Token(TokenType.LABRACK, 8, 9, "<"),
