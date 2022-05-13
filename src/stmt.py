@@ -30,6 +30,7 @@ class Declaration(Stmt):
                  upper: Optional[expr.Expr] = None,
                  offset: Optional[expr.Expr] = None,
                  multiplier: Optional[expr.Expr] = None,
+                 array_dims: Optional[List[expr.Expr]] = None,
                  initializer: Optional[expr.Expr] = None):
         # pylint: disable=too-many-arguments
         self.dtype = dtype
@@ -39,6 +40,7 @@ class Declaration(Stmt):
         self.upper = upper
         self.offset = offset
         self.multiplier = multiplier
+        self.array_dims = array_dims or []
         self.initializer = initializer
 
     def accept(self, visitor: Visitor) -> Any:
