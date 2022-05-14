@@ -747,6 +747,19 @@ class TestParser:
                  Token(TokenType.ASSIGN, 2, 14, "="),
                  expr.Literal(
                      Token(TokenType.INTNUMERAL, 2, 18, "1", RealValue(1)))))),
+        ([
+            Token(TokenType.PRINT, 3, 5, "print"),
+            Token(TokenType.LPAREN, 1, 8, "("),
+            Token(TokenType.IDENTIFIER, 1, 11, "var_0"),
+            Token(TokenType.COMMA, 1, 13, ","),
+            Token(TokenType.IDENTIFIER, 1, 16, "var_1"),
+            Token(TokenType.RPAREN, 1, 17, ")"),
+            Token(TokenType.SEMICOLON, 1, 22, ";")
+        ],
+         stmt.Print([
+             expr.Variable(Token(TokenType.IDENTIFIER, 1, 11, "var_0")),
+             expr.Variable(Token(TokenType.IDENTIFIER, 1, 16, "var_1")),
+         ])),
     ])
     def test_parse_statement(self, token_list, expected):
         """Test Parser._parse_statement."""
