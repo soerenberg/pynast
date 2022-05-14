@@ -3,8 +3,8 @@ import re
 
 import pytest
 
-import error
-import scanner
+from nast import error
+from nast import scanner
 
 
 @pytest.mark.parametrize("line,column,message,expected_msg", [

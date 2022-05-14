@@ -1,8 +1,8 @@
 """Tests for expr.py module."""
 import pytest
 
-import expr
-from tokens import Token, TokenType
+from nast import expr
+from nast.tokens import Token, TokenType
 
 # Examples of Token instances
 TOKEN_0 = Token(TokenType.IDENTIFIER, 1, 1, "abc")

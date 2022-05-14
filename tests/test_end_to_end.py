@@ -1,8 +1,6 @@
 """End-to-end tests involing scanning and parsing."""
-import pytest
-
-import parsing
-import scanner
+from nast import parsing
+from nast import scanner
 
 
 def test_simple():

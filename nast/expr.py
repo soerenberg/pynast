@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 import abc
-from typing import Any, List, Optional
+from typing import Any, List
 
-import tokens
+from nast import tokens
 
 
 class Expr:
