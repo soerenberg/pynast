@@ -529,6 +529,7 @@ class Parser:
         if self._match_any(*ASSIGNMENT_OPS):
             assignment_op = self._previous()
             value = self._parse_expression()
+            self._consume(TokenType.SEMICOLON, "Expect ';' after assignment.")
 
             return stmt.Assign(expression, assignment_op, value)
 
