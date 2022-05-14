@@ -679,10 +679,10 @@ class TestParser:
             Token(TokenType.SEMICOLON, 3, 9, ";")
         ], stmt.Continue(Token(TokenType.CONTINUE, 3, 5, "continue"))),
     ])
-    def test_parse_atomic_statement(self, token_list, expected):
-        """Test Parser._parse_atomic_statement."""
+    def test_parse_statement(self, token_list, expected):
+        """Test Parser._parse_statement."""
         lexer = parsing.Parser(token_list)
 
-        result = lexer._parse_atomic_statement()
+        result = lexer._parse_statement()
 
         assert result == expected

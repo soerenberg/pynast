@@ -514,7 +514,7 @@ class Parser:
 
         return constraints
 
-    def _parse_atomic_statement(self):
+    def _parse_statement(self) -> stmt.Stmt:
         if self._match(TokenType.BREAK):
             keyword = self._previous()
             self._consume(TokenType.SEMICOLON, "Expect ';' after 'break'.")
@@ -531,18 +531,19 @@ class Parser:
             value = self._parse_expression()
 
             return stmt.Assign(expression, assignment_op, value)
-        elif self._match(TokenType.TILDE):
-            identifier = self._consume(TokenType.IDENTIFIER,
-                                       "Expect identifier after '~'.")
-            self._consume(TokenType.LPAREN, "Expect '('.")
-            args = []
-            while True:
-                args.append(self._parse_expression())
-                if not self._match(TokenType.COMMA):
-                    break
-            self._consume(TokenType.RPAREN, "Expect ')'.")
 
-            # TODO parse truncation here
-            self._consume(TokenType.SEMICOLON, "Expect ';'.")
+        self._consume(TokenType.TILDE, "Invalid statement.")
+        identifier = self._consume(TokenType.IDENTIFIER,
+                                   "Expect identifier after '~'.")
+        self._consume(TokenType.LPAREN, "Expect '('.")
+        args = []
+        while True:
+            args.append(self._parse_expression())
+            if not self._match(TokenType.COMMA):
+                break
+        self._consume(TokenType.RPAREN, "Expect ')'.")
 
-            return stmt.Tilde(expression, identifier, args)
+        # TODO parse truncation here
+        self._consume(TokenType.SEMICOLON, "Expect ';'.")
+
+        return stmt.Tilde(expression, identifier, args)
