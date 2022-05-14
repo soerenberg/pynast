@@ -674,6 +674,10 @@ class TestParser:
             Token(TokenType.BREAK, 3, 5, "break"),
             Token(TokenType.SEMICOLON, 3, 9, ";")
         ], stmt.Break(Token(TokenType.BREAK, 3, 5, "break"))),
+        ([
+            Token(TokenType.CONTINUE, 3, 5, "continue"),
+            Token(TokenType.SEMICOLON, 3, 9, ";")
+        ], stmt.Continue(Token(TokenType.CONTINUE, 3, 5, "continue"))),
     ])
     def test_parse_atomic_statement(self, token_list, expected):
         """Test Parser._parse_atomic_statement."""
