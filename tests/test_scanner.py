@@ -168,12 +168,12 @@ def test_scan_source_keyword(keyword, token_type):
 @pytest.mark.parametrize("keyword,token_type,literal", [
     ("0", TokenType.INTNUMERAL, 0),
     ("123", TokenType.INTNUMERAL, 123),
-    ("2.0", TokenType.REALNUMERAL, RealValue(2, 0, 1)),
-    ("1.3", TokenType.REALNUMERAL, RealValue(1, 3, 1)),
+    ("2.0", TokenType.REALNUMERAL, RealValue(2, 0, 0)),
+    ("1.3", TokenType.REALNUMERAL, RealValue(1, 3, 0)),
     ("10.4e2", TokenType.REALNUMERAL, RealValue(10, 4, 2)),
     ("10.42E12", TokenType.REALNUMERAL, RealValue(10, 42, 12)),
-    ("123i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(123, 0, 1))),
-    ("1.3i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(1, 3, 1))),
+    ("123i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(123, 0, 0))),
+    ("1.3i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(1, 3, 0))),
     ("10.4e2i", TokenType.IMAGNUMERAL, ComplexValue(RealValue(10, 4, 2))),
 ])
 def test_scan_literal(keyword, token_type, literal):

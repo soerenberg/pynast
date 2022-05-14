@@ -275,7 +275,7 @@ class Scanner:
             # TODO convert to int with informative error message
             non_integer_part = int(self._get_to_current(non_integer_start))
 
-        exponent = 1
+        exponent = 0
         if self._peek() in ["e", "E"]:
             exponent_char = self._pop_char()
             # exp_literal
