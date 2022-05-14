@@ -678,6 +678,58 @@ class TestParser:
             Token(TokenType.CONTINUE, 3, 5, "continue"),
             Token(TokenType.SEMICOLON, 3, 9, ";")
         ], stmt.Continue(Token(TokenType.CONTINUE, 3, 5, "continue"))),
+        (
+            [
+                Token(TokenType.IF, 3, 5, "if"),
+                Token(TokenType.LPAREN, 1, 8, "("),
+                Token(TokenType.IDENTIFIER, 1, 11, "my_bool"),
+                Token(TokenType.RPAREN, 1, 17, ")"),
+                Token(TokenType.IDENTIFIER, 2, 3, "my_var"),
+                Token(TokenType.ASSIGN, 2, 14, "="),
+                Token(TokenType.INTNUMERAL, 2, 18, "1", RealValue(1)),
+                Token(TokenType.SEMICOLON, 2, 22, ";"),
+                Token(TokenType.EOF, 2, 23, ""),
+            ],
+            stmt.IfElse(
+                expr.Variable(Token(TokenType.IDENTIFIER, 1, 11, "my_bool")),
+                stmt.Assign(
+                    expr.Variable(Token(TokenType.IDENTIFIER, 2, 3, "my_var")),
+                    Token(TokenType.ASSIGN, 2, 14, "="),
+                    expr.Literal(
+                        Token(TokenType.INTNUMERAL, 2, 18, "1",
+                              RealValue(1))))),
+        ),
+        (
+            [
+                Token(TokenType.IF, 3, 5, "if"),
+                Token(TokenType.LPAREN, 1, 8, "("),
+                Token(TokenType.IDENTIFIER, 1, 11, "my_bool"),
+                Token(TokenType.RPAREN, 1, 17, ")"),
+                Token(TokenType.IDENTIFIER, 2, 3, "my_var"),
+                Token(TokenType.ASSIGN, 2, 14, "="),
+                Token(TokenType.INTNUMERAL, 2, 18, "1", RealValue(1)),
+                Token(TokenType.SEMICOLON, 2, 22, ";"),
+                Token(TokenType.ELSE, 3, 3, "else"),
+                Token(TokenType.IDENTIFIER, 3, 3, "my_var"),
+                Token(TokenType.ASSIGN, 3, 14, "="),
+                Token(TokenType.INTNUMERAL, 3, 18, "-1", RealValue(-1)),
+                Token(TokenType.SEMICOLON, 3, 22, ";"),
+            ],
+            stmt.IfElse(
+                expr.Variable(Token(TokenType.IDENTIFIER, 1, 11, "my_bool")),
+                stmt.Assign(
+                    expr.Variable(Token(TokenType.IDENTIFIER, 2, 3, "my_var")),
+                    Token(TokenType.ASSIGN, 2, 14, "="),
+                    expr.Literal(
+                        Token(TokenType.INTNUMERAL, 2, 18, "1",
+                              RealValue(1)))),
+                stmt.Assign(
+                    expr.Variable(Token(TokenType.IDENTIFIER, 3, 3, "my_var")),
+                    Token(TokenType.ASSIGN, 3, 14, "="),
+                    expr.Literal(
+                        Token(TokenType.INTNUMERAL, 3, 18, "-1",
+                              RealValue(-1))))),
+        ),
     ])
     def test_parse_statement(self, token_list, expected):
         """Test Parser._parse_statement."""
