@@ -760,6 +760,19 @@ class TestParser:
              expr.Variable(Token(TokenType.IDENTIFIER, 1, 11, "var_0")),
              expr.Variable(Token(TokenType.IDENTIFIER, 1, 16, "var_1")),
          ])),
+        ([
+            Token(TokenType.REJECT, 3, 5, "reject"),
+            Token(TokenType.LPAREN, 1, 8, "("),
+            Token(TokenType.IDENTIFIER, 1, 11, "var_0"),
+            Token(TokenType.COMMA, 1, 13, ","),
+            Token(TokenType.IDENTIFIER, 1, 16, "var_1"),
+            Token(TokenType.RPAREN, 1, 17, ")"),
+            Token(TokenType.SEMICOLON, 1, 22, ";")
+        ],
+         stmt.Reject([
+             expr.Variable(Token(TokenType.IDENTIFIER, 1, 11, "var_0")),
+             expr.Variable(Token(TokenType.IDENTIFIER, 1, 16, "var_1")),
+         ])),
     ])
     def test_parse_statement(self, token_list, expected):
         """Test Parser._parse_statement."""

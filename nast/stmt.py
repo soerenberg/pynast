@@ -183,6 +183,20 @@ class Print(Stmt):
                 and self.expressions == other.expressions)
 
 
+class Reject(Stmt):
+    """reject statement."""
+
+    def __init__(self, expressions: List[expr.Expr]):
+        self.expressions = expressions
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_reject(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Reject)
+                and self.expressions == other.expressions)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -223,3 +237,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_print(self, statement: Print) -> Any:
         """Visit Print."""
+
+    @abc.abstractmethod
+    def visit_reject(self, statement: Reject) -> Any:
+        """Visit Reject."""
