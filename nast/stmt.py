@@ -154,6 +154,21 @@ class IfElse(Stmt):
                 and self.alternative == other.alternative)
 
 
+class While(Stmt):
+    """while statement."""
+
+    def __init__(self, condition: expr.Expr, body: Stmt):
+        self.condition = condition
+        self.body = body
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_while(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, While) and self.condition == other.condition
+                and self.body == other.body)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -186,3 +201,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_if_else(self, statement: IfElse) -> Any:
         """Visit IfElse."""
+
+    @abc.abstractmethod
+    def visit_while(self, statement: While) -> Any:
+        """Visit While."""
