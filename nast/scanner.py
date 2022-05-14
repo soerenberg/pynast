@@ -253,7 +253,7 @@ class Scanner:
 
         if self._match("i"):
             self._add_token(TokenType.IMAGNUMERAL,
-                            ComplexValue(RealValue(int(literal), 0, 1)))
+                            ComplexValue(RealValue(int(literal), 0, 0)))
             return
 
         self._add_token(TokenType.INTNUMERAL, int(literal))
