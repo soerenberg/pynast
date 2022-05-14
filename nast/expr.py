@@ -171,33 +171,34 @@ class Visitor:
     """Visitor for Expr types."""
 
     @abc.abstractmethod
-    def visit_literal(self, expr: Literal) -> Any:
+    def visit_literal(self, expression: Literal) -> Any:
         """Visit Literal."""
 
     @abc.abstractmethod
-    def visit_unary(self, expr: Unary) -> Any:
+    def visit_unary(self, expression: Unary) -> Any:
         """Visit Unary."""
 
     @abc.abstractmethod
-    def visit_arithmetic_binary(self, expr: ArithmeticBinary) -> Any:
+    def visit_arithmetic_binary(self, expression: ArithmeticBinary) -> Any:
         """Visit ArithmeticBinary."""
 
     @abc.abstractmethod
-    def visit_ternary(self, expr: Ternary) -> Any:
+    def visit_ternary(self, expression: Ternary) -> Any:
         """Visit Ternary."""
 
     @abc.abstractmethod
-    def visit_function_application(self, expr: FunctionApplication) -> Any:
+    def visit_function_application(self,
+                                   expression: FunctionApplication) -> Any:
         """Visit FunctionApplication."""
 
     @abc.abstractmethod
-    def visit_indexing(self, expr: Indexing) -> Any:
+    def visit_indexing(self, expression: Indexing) -> Any:
         """Visit Indexing."""
 
     @abc.abstractmethod
-    def visit_slice(self, expr: Slice) -> Any:
+    def visit_slice(self, expression: Slice) -> Any:
         """Visit Slice."""
 
     @abc.abstractmethod
-    def visit_variable(self, expr: Variable) -> Any:
+    def visit_variable(self, expression: Variable) -> Any:
         """Visit Variable."""
