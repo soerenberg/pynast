@@ -169,6 +169,20 @@ class While(Stmt):
                 and self.body == other.body)
 
 
+class Print(Stmt):
+    """print statement."""
+
+    def __init__(self, expressions: List[expr.Expr]):
+        self.expressions = expressions
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_print(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Print)
+                and self.expressions == other.expressions)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -205,3 +219,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_while(self, statement: While) -> Any:
         """Visit While."""
+
+    @abc.abstractmethod
+    def visit_print(self, statement: Print) -> Any:
+        """Visit Print."""
