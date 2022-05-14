@@ -773,6 +773,16 @@ class TestParser:
              expr.Variable(Token(TokenType.IDENTIFIER, 1, 11, "var_0")),
              expr.Variable(Token(TokenType.IDENTIFIER, 1, 16, "var_1")),
          ])),
+        ([
+            Token(TokenType.TARGET, 7, 3, "target"),
+            Token(TokenType.PLUSASSIGN, 7, 9, "+="),
+            Token(TokenType.REALNUMERAL, 7, 14, "0.12", RealValue(0, 12)),
+            Token(TokenType.SEMICOLON, 7, 22, ";"),
+        ],
+         stmt.TargetPlusAssign(
+             expr.Literal(
+                 Token(TokenType.REALNUMERAL, 7, 14, "0.12", RealValue(0,
+                                                                       12))))),
     ])
     def test_parse_statement(self, token_list, expected):
         """Test Parser._parse_statement."""

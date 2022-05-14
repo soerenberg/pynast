@@ -558,6 +558,11 @@ class Parser:
             self._consume(TokenType.RPAREN, "Expect ')' after expression.")
             self._consume(TokenType.SEMICOLON, "Expect ';' after statement.")
             return stmt.Reject(expressions)
+        elif self._match(TokenType.TARGET):
+            self._consume(TokenType.PLUSASSIGN)
+            expression = self._parse_expression()
+            self._consume(TokenType.SEMICOLON, "Expect ';' after expression.")
+            return stmt.TargetPlusAssign(expression)
 
         expression = self._parse_expression()
 

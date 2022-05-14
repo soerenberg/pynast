@@ -197,6 +197,20 @@ class Reject(Stmt):
                 and self.expressions == other.expressions)
 
 
+class TargetPlusAssign(Stmt):
+    """target += ...; statement."""
+
+    def __init__(self, value: expr.Expr):
+        self.value = value
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_target_plus_assign(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, TargetPlusAssign)
+                and self.value == other.value)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -241,3 +255,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_reject(self, statement: Reject) -> Any:
         """Visit Reject."""
+
+    @abc.abstractmethod
+    def visit_target_plus_assign(self, statement: TargetPlusAssign) -> Any:
+        """Visit TargetPlusAssign."""
