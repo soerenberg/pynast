@@ -532,6 +532,12 @@ class Parser:
             if self._match(TokenType.ELSE):
                 alternative = self._parse_statement()
             return stmt.IfElse(condition, consequent, alternative)
+        elif self._match(TokenType.WHILE):
+            self._consume(TokenType.LPAREN, "Expect '(' after 'while'.")
+            condition = self._parse_expression()
+            self._consume(TokenType.RPAREN, "Expect ')' after condition.")
+            body = self._parse_statement()
+            return stmt.While(condition, body)
 
         expression = self._parse_expression()
 
