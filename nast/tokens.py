@@ -105,10 +105,12 @@ class TokenType(Enum):
     REJECT = auto()  # reject
     TRUNCATE = auto()  # T (note: this needs context)
 
+    # Constants and identifiers
     STRING = auto()
     INTNUMERAL = auto()
     REALNUMERAL = auto()
     IMAGNUMERAL = auto()
+    TARGET = auto()  # target
 
     IDENTIFIER = auto()
 

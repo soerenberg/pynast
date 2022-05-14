@@ -45,6 +45,7 @@ STAN_KEYWORDS = {
     "increment_log_prob": TokenType.INCREMENTLOGPROB,
     "print": TokenType.PRINT,
     "reject": TokenType.REJECT,
+    "target": TokenType.TARGET,
 }
 
 
