@@ -398,7 +398,7 @@ class Parser:
 
         raise ParseError(self._get_current(), "")
 
-    def _parse_declaration(self) -> stmt.Stmt:
+    def _parse_declaration(self) -> stmt.Declaration:
         """Parse variable declaration.
 
         It is assumed that the type has already been consumed in the previous
