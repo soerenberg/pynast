@@ -399,7 +399,12 @@ class Parser:
         raise ParseError(self._get_current(), "")
 
     def _parse_declaration(self) -> stmt.Stmt:
-        dtype = self._pop_token()
+        """Parse variable declaration.
+
+        It is assumed that the type has already been consumed in the previous
+        token.
+        """
+        dtype = self._previous()
         var_constraints = self._parse_lower_upper_offset_multiplier(dtype)
         type_dims = self._parse_type_dims(dtype.ttype)
         identifier = self._consume(TokenType.IDENTIFIER,

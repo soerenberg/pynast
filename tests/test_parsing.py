@@ -469,6 +469,7 @@ class TestParser:
     def test_parse_declaration(self, token_list, expected):
         """Test Parser._parse_declaration."""
         lexer = parsing.Parser(token_list)
+        lexer._current += 1  # assumption: data type has already been consumed.
 
         result = lexer._parse_declaration()
 
