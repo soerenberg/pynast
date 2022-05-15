@@ -603,3 +603,16 @@ class Parser:
         self._consume(TokenType.SEMICOLON, "Expect ';'.")
 
         return stmt.Tilde(expression, identifier, args)
+
+    def _parse_block(self) -> stmt.Block:
+        """Parse block. It is assumed that opening brace has been consumed."""
+        declarations: List[stmt.Declaration] = []
+        while self._match_any(*VAR_TYPES):
+            declarations.append(self._parse_declaration())
+
+        statements = [self._parse_statement()]
+
+        while not self._match(TokenType.RBRACE):
+            statements.append(self._parse_statement())
+
+        return stmt.Block(declarations, statements)

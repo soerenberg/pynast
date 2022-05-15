@@ -807,3 +807,42 @@ class TestParser:
         result = lexer._parse_statement()
 
         assert result == expected
+
+    @pytest.mark.parametrize("token_list,num_declarations,num_statements", [
+        ([
+            Token(TokenType.RBRACE, 6, 2, "}"),
+        ], 0, 1),
+        ([
+            Token(TokenType.RBRACE, 6, 2, "}"),
+        ], 0, 2),
+        ([
+            Token(TokenType.VECTOR, 2, 3, "vector"),
+            Token(TokenType.RBRACE, 6, 2, "}"),
+        ], 1, 7),
+        ([
+            Token(TokenType.INT, 2, 2, "int"),
+            Token(TokenType.REAL, 2, 3, "real"),
+            Token(TokenType.RBRACE, 6, 2, "}"),
+        ], 2, 2),
+    ])
+    def test_parse_block(self, token_list, num_declarations, num_statements,
+                         mocker):
+        mocked_declarations = [mocker.Mock() for _ in range(num_declarations)]
+        mocked_statements = [mocker.Mock() for _ in range(num_statements)]
+        lexer = parsing.Parser(token_list)
+
+        mocker.patch.object(lexer,
+                            "_parse_declaration",
+                            side_effect=mocked_declarations)
+        mocker.patch.object(lexer,
+                            "_parse_statement",
+                            side_effect=mocked_statements)
+        mocker.patch.object(
+            lexer,
+            "_match",
+            side_effect=[False for _ in range(num_statements - 1)] + [True])
+
+        result = lexer._parse_block()
+        expected = stmt.Block(mocked_declarations, mocked_statements)
+
+        assert result == expected
