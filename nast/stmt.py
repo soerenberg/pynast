@@ -134,6 +134,23 @@ class Continue(Stmt):
         return (isinstance(other, Continue) and self.keyword == other.keyword)
 
 
+class Return(Stmt):
+    """return statement."""
+
+    def __init__(self,
+                 keyword: tokens.Token,
+                 value: Optional[expr.Expr] = None):
+        self.keyword = keyword
+        self.value = value
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_return(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Return) and self.keyword == other.keyword
+                and self.value == other.value)
+
+
 class IfElse(Stmt):
     """if/else statement."""
 
@@ -239,6 +256,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_continue(self, statement: Continue) -> Any:
         """Visit Continue."""
+
+    @abc.abstractmethod
+    def visit_return(self, statement: Return) -> Any:
+        """Visit Return."""
 
     @abc.abstractmethod
     def visit_if_else(self, statement: IfElse) -> Any:
