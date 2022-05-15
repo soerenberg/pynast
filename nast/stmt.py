@@ -241,6 +241,26 @@ class TargetPlusAssign(Stmt):
                 and self.value == other.value)
 
 
+class Block(Stmt):
+    """Block statement, i.e.,
+
+    '{'  var_declaration* statement+ '}' .
+    """
+
+    def __init__(self, declarations: List[Declaration],
+                 statements: List[Stmt]):
+        self.declarations = declarations
+        self.statements = statements
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_block(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Block)
+                and self.declarations == other.declarations
+                and self.statements == other.statements)
+
+
 class Visitor:
     """Visitor for Stmt types."""
 
@@ -297,3 +317,7 @@ class Visitor:
     @abc.abstractmethod
     def visit_target_plus_assign(self, statement: TargetPlusAssign) -> Any:
         """Visit TargetPlusAssign."""
+
+    @abc.abstractmethod
+    def visit_block(self, statement: Block) -> Any:
+        """Visit Block."""
