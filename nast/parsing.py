@@ -523,6 +523,14 @@ class Parser:
             keyword = self._previous()
             self._consume(TokenType.SEMICOLON, "Expect ';' after 'continue'.")
             return stmt.Continue(keyword)
+        elif self._match(TokenType.RETURN):
+            keyword = self._previous()
+            value = None
+            if not self._match(TokenType.SEMICOLON):
+                value = self._parse_expression()
+                self._consume(TokenType.SEMICOLON,
+                              "Expect ';' after return value.")
+            return stmt.Return(keyword, value)
         elif self._match(TokenType.IF):
             self._consume(TokenType.LPAREN, "Expect '(' after 'if'.")
             condition = self._parse_expression()

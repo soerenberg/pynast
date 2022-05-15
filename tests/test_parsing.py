@@ -678,6 +678,19 @@ class TestParser:
             Token(TokenType.CONTINUE, 3, 5, "continue"),
             Token(TokenType.SEMICOLON, 3, 9, ";")
         ], stmt.Continue(Token(TokenType.CONTINUE, 3, 5, "continue"))),
+        ([
+            Token(TokenType.RETURN, 3, 5, "return"),
+            Token(TokenType.SEMICOLON, 3, 9, ";")
+        ], stmt.Return(Token(TokenType.RETURN, 3, 5, "return"))),
+        ([
+            Token(TokenType.RETURN, 3, 5, "return"),
+            Token(TokenType.INTNUMERAL, 3, 11, "1", RealValue(1)),
+            Token(TokenType.SEMICOLON, 3, 12, ";")
+        ],
+         stmt.Return(
+             Token(TokenType.RETURN, 3, 5, "return"),
+             expr.Literal(Token(TokenType.INTNUMERAL, 3, 11, "1",
+                                RealValue(1))))),
         (
             [
                 Token(TokenType.IF, 3, 5, "if"),
