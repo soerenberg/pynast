@@ -808,6 +808,22 @@ class TestParser:
 
         assert result == expected
 
+    def test_parse_statement_calls_parse_block(self, mocker):
+        """Test that Parser._parse_declaration calls Parser._parse_block."""
+        token_list = [Token(TokenType.LBRACE, 2, 2, "{")]
+
+        lexer = parsing.Parser(token_list)
+
+        mocked_return_value = mocker.Mock()
+        mocker.patch.object(lexer,
+                            "_parse_block",
+                            return_value=mocked_return_value)
+
+        result = lexer._parse_statement()
+
+        lexer._parse_block.assert_called_once_with()
+        assert result is mocked_return_value
+
     @pytest.mark.parametrize("token_list,num_declarations,num_statements", [
         ([
             Token(TokenType.RBRACE, 6, 2, "}"),

@@ -576,6 +576,8 @@ class Parser:
             expression = self._parse_expression()
             self._consume(TokenType.SEMICOLON, "Expect ';' after expression.")
             return stmt.TargetPlusAssign(expression)
+        elif self._match(TokenType.LBRACE):
+            return self._parse_block()
         elif self._match(TokenType.SEMICOLON):
             return stmt.Empty(self._previous())
 
