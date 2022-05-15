@@ -151,6 +151,19 @@ class Return(Stmt):
                 and self.value == other.value)
 
 
+class Empty(Stmt):
+    """Empty statement, i.e., just a semicolon."""
+
+    def __init__(self, semicolon: tokens.Token):
+        self.semicolon = semicolon
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_empty(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Empty) and self.semicolon == other.semicolon)
+
+
 class IfElse(Stmt):
     """if/else statement."""
 
@@ -260,6 +273,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_return(self, statement: Return) -> Any:
         """Visit Return."""
+
+    @abc.abstractmethod
+    def visit_empty(self, statement: Empty) -> Any:
+        """Visit Empty."""
 
     @abc.abstractmethod
     def visit_if_else(self, statement: IfElse) -> Any:
