@@ -682,6 +682,8 @@ class TestParser:
             Token(TokenType.RETURN, 3, 5, "return"),
             Token(TokenType.SEMICOLON, 3, 9, ";")
         ], stmt.Return(Token(TokenType.RETURN, 3, 5, "return"))),
+        ([Token(TokenType.SEMICOLON, 3, 9, ";")
+          ], stmt.Empty(Token(TokenType.SEMICOLON, 3, 9, ";"))),
         ([
             Token(TokenType.RETURN, 3, 5, "return"),
             Token(TokenType.INTNUMERAL, 3, 11, "1", RealValue(1)),
