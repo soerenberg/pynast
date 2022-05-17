@@ -86,13 +86,7 @@ class Parser:
 
     def parse(self) -> List[Any]:
         """Run parser."""
-        result = []
-
-        while not self._is_at_end():
-            self._pop_token()
-            result.append(None)
-
-        return result
+        raise NotImplementedError
 
     def _pop_token(self):
         token = self._peek()
