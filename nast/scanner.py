@@ -52,6 +52,8 @@ STAN_KEYWORDS = {
 class Scanner:
     """Scanner for Stan."""
 
+    # pylint: disable=too-few-public-methods
+
     def __init__(self, source: str):
         self._source = source
         self._tokens: List[Token] = []
@@ -62,7 +64,12 @@ class Scanner:
         self._column = 1
 
     def scan_tokens(self) -> List[Token]:
-        # TODO list comprehension
+        """Scan tokens.
+
+        Returns:
+            List[Token]: list of scanned tokens from source code.
+        """
+        # TODO refactor with list comprehension?
         while not self._is_at_end():
             self._column += self._current - self._start
             self._start = self._current
@@ -79,9 +86,9 @@ class Scanner:
 
         if char == "\n":
             self._increase_line()
-            return
         elif char in [" ", "\t"]:
-            return
+            # ignore tabs and white spaces
+            pass
         elif char == "\"":
             self._scan_string()
         elif char == "{":
@@ -203,9 +210,7 @@ class Scanner:
             self._scan_while_char()
             text = self._get_start_to_current()
 
-        token_type = TokenType.IDENTIFIER
-        if text in STAN_KEYWORDS:
-            token_type = STAN_KEYWORDS[text]
+        token_type = STAN_KEYWORDS.get(text, TokenType.IDENTIFIER)
 
         self._add_token(token_type)
 

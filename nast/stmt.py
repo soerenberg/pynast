@@ -139,7 +139,7 @@ class Break(Stmt):
         return visitor.visit_break(self)
 
     def __eq__(self, other):
-        return (isinstance(other, Break) and self.keyword == other.keyword)
+        return isinstance(other, Break) and self.keyword == other.keyword
 
 
 class Continue(Stmt):
@@ -152,7 +152,7 @@ class Continue(Stmt):
         return visitor.visit_continue(self)
 
     def __eq__(self, other):
-        return (isinstance(other, Continue) and self.keyword == other.keyword)
+        return isinstance(other, Continue) and self.keyword == other.keyword
 
 
 class Return(Stmt):
@@ -182,7 +182,7 @@ class Empty(Stmt):
         return visitor.visit_empty(self)
 
     def __eq__(self, other):
-        return (isinstance(other, Empty) and self.semicolon == other.semicolon)
+        return isinstance(other, Empty) and self.semicolon == other.semicolon
 
 
 class IfElse(Stmt):

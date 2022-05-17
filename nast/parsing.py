@@ -71,6 +71,7 @@ class ParseError(Exception):
 
 
 class VarConstraints(NamedTuple):
+    """Constraints for variable declarations."""
     lower: Optional[expr.Expr] = None
     upper: Optional[expr.Expr] = None
     offset: Optional[expr.Expr] = None
@@ -79,6 +80,8 @@ class VarConstraints(NamedTuple):
 
 class Parser:
     """Stan parser."""
+
+    # pylint: disable=too-few-public-methods
 
     def __init__(self, token_list: List[Token]):
         self._token_list = list(token_list)
@@ -265,7 +268,7 @@ class Parser:
         return expression
 
     def _parse_precedence_3(self) -> expr.Expr:
-        """Precedence level 3.
+        r"""Precedence level 3.
 
         `\` left division, binary infix, left associative.
         """
@@ -518,11 +521,11 @@ class Parser:
             keyword = self._previous()
             self._consume(TokenType.SEMICOLON, "Expect ';' after 'break'.")
             return stmt.Break(keyword)
-        elif self._match(TokenType.CONTINUE):
+        if self._match(TokenType.CONTINUE):
             keyword = self._previous()
             self._consume(TokenType.SEMICOLON, "Expect ';' after 'continue'.")
             return stmt.Continue(keyword)
-        elif self._match(TokenType.RETURN):
+        if self._match(TokenType.RETURN):
             keyword = self._previous()
             value = None
             if not self._match(TokenType.SEMICOLON):
@@ -530,7 +533,7 @@ class Parser:
                 self._consume(TokenType.SEMICOLON,
                               "Expect ';' after return value.")
             return stmt.Return(keyword, value)
-        elif self._match(TokenType.IF):
+        if self._match(TokenType.IF):
             self._consume(TokenType.LPAREN, "Expect '(' after 'if'.")
             condition = self._parse_expression()
             self._consume(TokenType.RPAREN, "Expect ')' after condition.")
@@ -539,13 +542,13 @@ class Parser:
             if self._match(TokenType.ELSE):
                 alternative = self._parse_statement()
             return stmt.IfElse(condition, consequent, alternative)
-        elif self._match(TokenType.WHILE):
+        if self._match(TokenType.WHILE):
             self._consume(TokenType.LPAREN, "Expect '(' after 'while'.")
             condition = self._parse_expression()
             self._consume(TokenType.RPAREN, "Expect ')' after condition.")
             body = self._parse_statement()
             return stmt.While(condition, body)
-        elif self._match(TokenType.PRINT):
+        if self._match(TokenType.PRINT):
             self._consume(TokenType.LPAREN, "Expect '(' after 'print'.")
             expressions = [self._parse_expression()]
 
@@ -555,7 +558,7 @@ class Parser:
             self._consume(TokenType.RPAREN, "Expect ')' after expression.")
             self._consume(TokenType.SEMICOLON, "Expect ';' after statement.")
             return stmt.Print(expressions)
-        elif self._match(TokenType.REJECT):
+        if self._match(TokenType.REJECT):
             self._consume(TokenType.LPAREN, "Expect '(' after 'reject'.")
             expressions = [self._parse_expression()]
 
@@ -565,14 +568,14 @@ class Parser:
             self._consume(TokenType.RPAREN, "Expect ')' after expression.")
             self._consume(TokenType.SEMICOLON, "Expect ';' after statement.")
             return stmt.Reject(expressions)
-        elif self._match(TokenType.TARGET):
+        if self._match(TokenType.TARGET):
             self._consume(TokenType.PLUSASSIGN)
             expression = self._parse_expression()
             self._consume(TokenType.SEMICOLON, "Expect ';' after expression.")
             return stmt.TargetPlusAssign(expression)
-        elif self._match(TokenType.LBRACE):
+        if self._match(TokenType.LBRACE):
             return self._parse_block()
-        elif self._match(TokenType.SEMICOLON):
+        if self._match(TokenType.SEMICOLON):
             return stmt.Empty(self._previous())
 
         expression = self._parse_expression()

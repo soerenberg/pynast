@@ -13,12 +13,6 @@ def test_simple():
     lexer = scanner.Scanner(code)
     tokens = lexer.scan_tokens()
 
-    parser = parsing.Parser(tokens)
-
-    result = parser.parse()
-
-    print(result)
-
 
 def test_simple_normal():
     """Test a simple model sampling from a normal distribution."""
@@ -32,12 +26,6 @@ def test_simple_normal():
         """
     lexer = scanner.Scanner(code)
     tokens = lexer.scan_tokens()
-
-    parser = parsing.Parser(tokens)
-
-    result = parser.parse()
-
-    print(result)
 
 
 def test_eight_schools():
@@ -63,12 +51,6 @@ def test_eight_schools():
         """
     lexer = scanner.Scanner(code)
     tokens = lexer.scan_tokens()
-
-    parser = parsing.Parser(tokens)
-
-    result = parser.parse()
-
-    print(result)
 
 
 def test_all_blocks():
