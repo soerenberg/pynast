@@ -17,6 +17,27 @@ class Stmt:
         """Accept method for the visitor pattern."""
 
 
+class Program(Stmt):
+    """Stan program."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, functions: Block, data: Block, transformed_data: Block,
+                 parameters: Block, transformed_parameters: Block,
+                 model: Block, generated_quantities: Block):
+        # pylint: disable=too-many-arguments
+        self.functions = functions
+        self.data = data
+        self.transformed_data = transformed_data
+        self.parameters = parameters
+        self.transformed_parameters = transformed_parameters
+        self.model = model
+        self.generated_quantities = generated_quantities
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_program(self)
+
+
 class Declaration(Stmt):
     """Variable declaration statement."""
 
@@ -265,6 +286,10 @@ class Visitor:
     """Visitor for Stmt types."""
 
     # pylint: disable=too-few-public-methods
+
+    @abc.abstractmethod
+    def visit_program(self, statement: Program) -> Any:
+        """Visit Program."""
 
     @abc.abstractmethod
     def visit_declaration(self, statement: Declaration) -> Any:
