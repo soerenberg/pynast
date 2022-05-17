@@ -149,7 +149,7 @@ class Continue(Stmt):
         self.keyword = keyword
 
     def accept(self, visitor: Visitor) -> Any:
-        return visitor.visit_break(self)
+        return visitor.visit_continue(self)
 
     def __eq__(self, other):
         return (isinstance(other, Continue) and self.keyword == other.keyword)
