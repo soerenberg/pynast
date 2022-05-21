@@ -77,6 +77,24 @@ class Declaration(Stmt):
                 and self.initializer == other.initializer)
 
 
+class ArgumentDeclaration(Stmt):
+    """Argument declaration for custom functions."""
+
+    def __init__(self, dtype: tokens.TokenType, n_dims: int,
+                 identifier: tokens.Token):
+        self.dtype = dtype
+        self.n_dims = n_dims
+        self.identifier = identifier
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_argument_declaration(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, ArgumentDeclaration)
+                and self.dtype == other.dtype and self.n_dims == other.n_dims
+                and self.identifier == other.identifier)
+
+
 class Assign(Stmt):
     """Assignment statement."""
 
@@ -294,6 +312,11 @@ class Visitor:
     @abc.abstractmethod
     def visit_declaration(self, statement: Declaration) -> Any:
         """Visit Declaration."""
+
+    @abc.abstractmethod
+    def visit_argument_declaration(self,
+                                   statement: ArgumentDeclaration) -> Any:
+        """Visit ArgumentDeclaration."""
 
     @abc.abstractmethod
     def visit_assign(self, statement: Assign) -> Any:
