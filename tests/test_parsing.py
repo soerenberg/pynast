@@ -900,3 +900,68 @@ class TestParser:
         expected = stmt.Block(mocked_declarations, mocked_statements)
 
         assert result == expected
+
+    @pytest.mark.parametrize("token_list,expected", [
+        ([
+            Token(TokenType.INT, 2, 2, "int"),
+            Token(TokenType.IDENTIFIER, 2, 8, "my_var")
+        ], (TokenType.INT, 0)),
+        ([
+            Token(TokenType.ARRAY, 2, 2, "array"),
+            Token(TokenType.LBRACK, 2, 2, "["),
+            Token(TokenType.RBRACK, 2, 2, "]"),
+            Token(TokenType.REAL, 2, 2, "real"),
+            Token(TokenType.IDENTIFIER, 2, 8, "my_var")
+        ], (TokenType.REAL, 1)),
+        ([
+            Token(TokenType.ARRAY, 2, 2, "array"),
+            Token(TokenType.LBRACK, 2, 2, "["),
+            Token(TokenType.COMMA, 2, 2, ","),
+            Token(TokenType.COMMA, 2, 2, ","),
+            Token(TokenType.RBRACK, 2, 2, "]"),
+            Token(TokenType.MATRIX, 2, 2, "real"),
+            Token(TokenType.IDENTIFIER, 2, 8, "my_var")
+        ], (TokenType.MATRIX, 3)),
+        ([
+            Token(TokenType.ROWVECTOR, 2, 2, "int"),
+            Token(TokenType.LBRACK, 2, 2, "["),
+            Token(TokenType.RBRACK, 2, 2, "]"),
+            Token(TokenType.IDENTIFIER, 2, 8, "my_var")
+        ], (TokenType.ROWVECTOR, 1)),
+        ([
+            Token(TokenType.VECTOR, 2, 2, "int"),
+            Token(TokenType.LBRACK, 2, 2, "["),
+            Token(TokenType.COMMA, 2, 2, ","),
+            Token(TokenType.COMMA, 2, 2, ","),
+            Token(TokenType.COMMA, 2, 2, ","),
+            Token(TokenType.RBRACK, 2, 2, "]"),
+            Token(TokenType.IDENTIFIER, 2, 8, "my_var")
+        ], (TokenType.VECTOR, 4)),
+    ])
+    def test_parse_function_type(self, token_list, expected):
+        """Test Parser._parse_function_type."""
+        lexer = parsing.Parser(token_list)
+        lexer._current += 1
+
+        result = lexer._parse_function_type()
+
+        assert result == expected
+
+    @pytest.mark.parametrize("token_list", [
+        [
+            Token(TokenType.COVMATRIX, 2, 2, "int"),
+            Token(TokenType.IDENTIFIER, 2, 8, "my_var")
+        ],
+        [
+            Token(TokenType.ARRAY, 2, 2, "array"),
+            Token(TokenType.REAL, 2, 2, "real"),
+            Token(TokenType.IDENTIFIER, 2, 8, "my_var")
+        ],
+    ])
+    def test_parse_function_type(self, token_list):
+        """Test Parser._parse_function_type."""
+        lexer = parsing.Parser(token_list)
+        lexer._current += 1
+
+        with pytest.raises(parsing.ParseError):
+            _ = lexer._parse_function_type()

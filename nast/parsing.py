@@ -1,5 +1,5 @@
 """Stan parser."""
-from typing import Any, Dict, List, Mapping, NamedTuple, Optional
+from typing import Any, Dict, List, Mapping, NamedTuple, Optional, Tuple
 
 from nast import expr
 from nast import stmt
@@ -23,6 +23,17 @@ ONE_DIM_VAR_TYPES = [
     TokenType.CORRMATRIX,
     TokenType.COVMATRIX,
 ]
+
+BASIC_TYPES = [
+    TokenType.INT,
+    TokenType.REAL,
+    TokenType.COMPLEX,
+    TokenType.VECTOR,
+    TokenType.ROWVECTOR,
+    TokenType.MATRIX,
+]
+
+RETURN_TYPE_TTYPES = [TokenType.VOID, TokenType.ARRAY] + BASIC_TYPES
 
 # Data types that with two dimensions
 TWO_DIM_VAR_TYPES = [TokenType.MATRIX]
@@ -625,3 +636,40 @@ class Parser:
         self._consume(TokenType.RBRACE, "Expected '}'.")
 
         return stmt.Block(declarations, statements)
+
+    def _parse_function_type(self) -> Tuple[TokenType, int]:
+        """Parse return or argument type for custom functions.
+
+        Types occurring as return type or argument types are more restricted
+        than types of, say, parameters.
+
+        Returns:
+            TokenType: Data type (e.g. TokenType.INT).
+            int: number of (unsized) array dimensions, where `0` means scalar
+                (non-array) values.
+        """
+        dtype = self._previous()
+        if dtype.ttype not in RETURN_TYPE_TTYPES:
+            raise ParseError(dtype, f"Invalid return type {dtype}.")
+
+        n_dims = 0
+
+        if dtype.ttype == TokenType.ARRAY:
+            self._consume(TokenType.LBRACK, "Expect '[' after 'array'.")
+            n_dims = 1
+
+            while self._match(TokenType.COMMA):
+                n_dims += 1
+
+            self._consume(TokenType.RBRACK, "Expect ']'.")
+
+            dtype = self._consume_any(BASIC_TYPES, "Expect basic type.")
+        elif self._match(TokenType.LBRACK):
+            n_dims = 1
+
+            while self._match(TokenType.COMMA):
+                n_dims += 1
+
+            self._consume(TokenType.RBRACK, "Expect ']'.")
+
+        return dtype.ttype, n_dims
