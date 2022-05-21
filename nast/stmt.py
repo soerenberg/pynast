@@ -116,8 +116,9 @@ class FunctionDeclaration(Stmt):
     # pylint: disable=too-few-public-methods
 
     def __init__(self, return_dtype: ReturnTypeDeclaration,
-                 args: List[ArgumentDeclaration]):
+                 identifier: tokens.Token, args: List[ArgumentDeclaration]):
         self.return_dtype = return_dtype
+        self.identifier = identifier
         self.args = args
 
     def accept(self, visitor: Visitor) -> Any:
@@ -126,6 +127,7 @@ class FunctionDeclaration(Stmt):
     def __eq__(self, other):
         return (isinstance(other, FunctionDeclaration)
                 and self.return_dtype == other.return_dtype
+                and self.identifier == other.identifier
                 and self.args == other.args)
 
 
