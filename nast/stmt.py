@@ -131,6 +131,23 @@ class FunctionDeclaration(Stmt):
                 and self.args == other.args)
 
 
+class FunctionDefinition(Stmt):
+    """Function declaration."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, header: FunctionDeclaration, body: Block):
+        self.header = header
+        self.body = body
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_function_definition(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, FunctionDefinition)
+                and self.header == other.header and self.body == other.body)
+
+
 class Assign(Stmt):
     """Assignment statement."""
 
@@ -363,6 +380,10 @@ class Visitor:
     def visit_function_declaration(self,
                                    statement: FunctionDeclaration) -> Any:
         """Visit FunctionDeclaration."""
+
+    @abc.abstractmethod
+    def visit_function_definition(self, statement: FunctionDefinition) -> Any:
+        """Visit FunctionDefinition."""
 
     @abc.abstractmethod
     def visit_assign(self, statement: Assign) -> Any:
