@@ -673,3 +673,20 @@ class Parser:
             self._consume(TokenType.RBRACK, "Expect ']'.")
 
         return dtype.ttype, n_dims
+
+    def _parse_argument_declaration(self) -> stmt.ArgumentDeclaration:
+        """Parse argument (type and identifier name) of custom functions.
+
+        Types occurring as return type or argument types are more restricted
+        than types of, say, parameters.
+
+        Returns:
+            TokenType: Data type (e.g. TokenType.INT).
+            int: number of (unsized) array dimensions, where `0` means scalar
+                (non-array) values.
+            Token: identifier token for the argument name.
+        """
+        dtype, n_dims = self._parse_function_type()
+        identifier = self._consume(TokenType.IDENTIFIER,
+                                   "Expect argument name.")
+        return stmt.ArgumentDeclaration(dtype, n_dims, identifier)

@@ -965,3 +965,22 @@ class TestParser:
 
         with pytest.raises(parsing.ParseError):
             _ = lexer._parse_function_type()
+
+    def test_parse_function_argument(self, mocker):
+        """Test Parser._parse_argument_declaration."""
+        identifier = Token(TokenType.IDENTIFIER, 3, 4, "my_var")
+        token_list = [identifier]
+
+        lexer = parsing.Parser(token_list)
+        mocked_dtype = mocker.Mock()
+        mocked_n_dims = mocker.Mock()
+        mocker.patch.object(lexer,
+                            "_parse_function_type",
+                            return_value=(mocked_dtype, mocked_n_dims))
+
+        expected = stmt.ArgumentDeclaration(mocked_dtype, mocked_n_dims,
+                                            identifier)
+
+        result = lexer._parse_argument_declaration()
+
+        assert expected == result
