@@ -110,6 +110,25 @@ class ReturnTypeDeclaration(Stmt):
                 and self.dtype == other.dtype and self.n_dims == other.n_dims)
 
 
+class FunctionDeclaration(Stmt):
+    """Function declaration."""
+
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, return_dtype: ReturnTypeDeclaration,
+                 args: List[ArgumentDeclaration]):
+        self.return_dtype = return_dtype
+        self.args = args
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_function_declaration(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, FunctionDeclaration)
+                and self.return_dtype == other.return_dtype
+                and self.args == other.args)
+
+
 class Assign(Stmt):
     """Assignment statement."""
 
@@ -337,6 +356,11 @@ class Visitor:
     def visit_return_type_declaration(self,
                                       statement: ReturnTypeDeclaration) -> Any:
         """Visit ReturnTypeDeclaration."""
+
+    @abc.abstractmethod
+    def visit_function_declaration(self,
+                                   statement: FunctionDeclaration) -> Any:
+        """Visit FunctionDeclaration."""
 
     @abc.abstractmethod
     def visit_assign(self, statement: Assign) -> Any:
