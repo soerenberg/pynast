@@ -638,6 +638,15 @@ class Parser:
         return stmt.Block(declarations, statements)
 
 
+    def _parse_function_declaration_arguments(
+            self) -> List[stmt.ArgumentDeclaration]:
+        args: List[stmt.ArgumentDeclaration] = []
+        if not self._check(TokenType.RPAREN):
+            args.append(self._parse_argument_declaration())
+            while self._match(TokenType.COMMA):
+                args.append(self._parse_argument_declaration())
+        return args
+
     def _parse_return_type_declaration(self) -> stmt.ReturnTypeDeclaration:
         return stmt.ReturnTypeDeclaration(*self._parse_function_type())
 

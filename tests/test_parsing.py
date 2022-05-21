@@ -901,6 +901,44 @@ class TestParser:
 
         assert result == expected
 
+    @pytest.mark.parametrize("token_list,expected", [
+        ([Token(TokenType.RPAREN, 8, 7, ")")], []),
+        ([
+            Token(TokenType.INT, 8, 7, "int"),
+            Token(TokenType.IDENTIFIER, 8, 19, "arg0"),
+            Token(TokenType.RPAREN, 8, 7, ")")
+        ], [
+            stmt.ArgumentDeclaration(
+                TokenType.INT, 0, Token(TokenType.IDENTIFIER, 8, 19, "arg0"))
+        ]),
+        ([
+            Token(TokenType.ARRAY, 7, 2, "array"),
+            Token(TokenType.LBRACK, 7, 3, "["),
+            Token(TokenType.COMMA, 7, 8, ","),
+            Token(TokenType.COMMA, 7, 10, ","),
+            Token(TokenType.RBRACK, 7, 15, "]"),
+            Token(TokenType.VECTOR, 7, 16, "vector"),
+            Token(TokenType.IDENTIFIER, 7, 19, "arg0"),
+            Token(TokenType.COMMA, 8, 7, ","),
+            Token(TokenType.REAL, 8, 9, "real"),
+            Token(TokenType.IDENTIFIER, 8, 19, "arg1"),
+            Token(TokenType.RPAREN, 8, 27, ")")
+        ], [
+            stmt.ArgumentDeclaration(
+                TokenType.VECTOR, 3, Token(TokenType.IDENTIFIER, 7, 19,
+                                           "arg0")),
+            stmt.ArgumentDeclaration(
+                TokenType.REAL, 0, Token(TokenType.IDENTIFIER, 8, 19, "arg1"))
+        ]),
+    ])
+    def test_parse_function_declaration_arguments(self, token_list, expected):
+        """Test Parser._parse_function_declaration_arguments."""
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_function_declaration_arguments()
+
+        assert result == expected
+
     def test_parse_return_type_declaration(self, mocker):
         """Test Parser._parse_return_type_declaration."""
         mocked_return_value = [mocker.Mock(), mocker.Mock()]
