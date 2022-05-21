@@ -138,14 +138,22 @@ class Parser:
         """Check if current has TokenType, and consume if it does."""
         return self._match_any(ttype)
 
+    def _consume_any(self,
+                     ttypes: List[TokenType],
+                     message: Optional[str] = None) -> Token:
+        """Consume token of required type or raise error."""
+        if self._check_any(*ttypes):
+            return self._pop_token()
+
+        raise ParseError(
+            self._get_current(), message
+            or f"Expected {','.join([str(x) for x in ttypes])}.")
+
     def _consume(self,
                  ttype: TokenType,
                  message: Optional[str] = None) -> Token:
         """Consume token of required type or raise error."""
-        if self._check(ttype):
-            return self._pop_token()
-
-        raise ParseError(self._get_current(), message or f"Expected {ttype}.")
+        return self._consume_any([ttype], message=message)
 
     def _parse_expression(self) -> expr.Expr:
         # <expression> ::= <lhs>

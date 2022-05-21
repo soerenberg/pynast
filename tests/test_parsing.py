@@ -100,6 +100,44 @@ class TestParser:
         lexer._match_any.assert_called_once_with(mocked_ttype)
         assert result is mocked_return_value
 
+    @pytest.mark.parametrize("token_list,current,ttypes,expected_index", [
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.EOF, 1, 2)], 0,
+         [TokenType.BANG], 0),
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.SEMICOLON, 1, 2),
+          Token(TokenType.EOF, 1, 3)], 1,
+          [TokenType.SEMICOLON, TokenType.ARRAY], 1),
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.SEMICOLON, 1, 2),
+          Token(TokenType.EOF, 1, 3)], 1, [TokenType.SEMICOLON], 1),
+    ])  # yapf: disable
+    def test_consume_any(self, token_list, current, ttypes, expected_index):
+        """Test Parser._consume_any."""
+        lexer = parsing.Parser(token_list)
+        lexer._current = current
+
+        result = lexer._consume_any(ttypes)
+
+        assert result is token_list[expected_index]
+
+    @pytest.mark.parametrize("token_list,current,ttypes", [
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.EOF, 1, 2)], 0,
+         [TokenType.COMMA]),
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.SEMICOLON, 1, 2),
+          Token(TokenType.EOF, 1, 3)], 1,
+          [TokenType.BANG, TokenType.ARRAY]),
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.SEMICOLON, 1, 2),
+          Token(TokenType.EOF, 1, 3)], 1,
+          []),
+        ([Token(TokenType.BANG, 1, 1), Token(TokenType.SEMICOLON, 1, 2),
+          Token(TokenType.EOF, 1, 3)], 1, [TokenType.BANG]),
+    ])  # yapf: disable
+    def test_consume_any_raises(self, token_list, current, ttypes):
+        """Test Parser._consume_any."""
+        lexer = parsing.Parser(token_list)
+        lexer._current = current
+
+        with pytest.raises(parsing.ParseError):
+            _ = lexer._consume_any(ttypes)
+
     @pytest.mark.parametrize("token_list,current,ttype,expected_index", [
         ([Token(TokenType.BANG, 1, 1), Token(TokenType.EOF, 1, 2)], 0,
          TokenType.BANG, 0),
