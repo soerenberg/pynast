@@ -95,6 +95,21 @@ class ArgumentDeclaration(Stmt):
                 and self.identifier == other.identifier)
 
 
+class ReturnTypeDeclaration(Stmt):
+    """Declaration of return type of custom function."""
+
+    def __init__(self, dtype: tokens.TokenType, n_dims: int):
+        self.dtype = dtype
+        self.n_dims = n_dims
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_return_type_declaration(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, ReturnTypeDeclaration)
+                and self.dtype == other.dtype and self.n_dims == other.n_dims)
+
+
 class Assign(Stmt):
     """Assignment statement."""
 
@@ -317,6 +332,11 @@ class Visitor:
     def visit_argument_declaration(self,
                                    statement: ArgumentDeclaration) -> Any:
         """Visit ArgumentDeclaration."""
+
+    @abc.abstractmethod
+    def visit_return_type_declaration(self,
+                                      statement: ReturnTypeDeclaration) -> Any:
+        """Visit ReturnTypeDeclaration."""
 
     @abc.abstractmethod
     def visit_assign(self, statement: Assign) -> Any:
