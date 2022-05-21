@@ -637,6 +637,10 @@ class Parser:
 
         return stmt.Block(declarations, statements)
 
+
+    def _parse_return_type_declaration(self) -> stmt.ReturnTypeDeclaration:
+        return stmt.ReturnTypeDeclaration(*self._parse_function_type())
+
     def _parse_function_type(self) -> Tuple[TokenType, int]:
         """Parse return or argument type for custom functions.
 
@@ -648,9 +652,9 @@ class Parser:
             int: number of (unsized) array dimensions, where `0` means scalar
                 (non-array) values.
         """
-        dtype = self._previous()
+        dtype = self._pop_token()
         if dtype.ttype not in RETURN_TYPE_TTYPES:
-            raise ParseError(dtype, f"Invalid return type {dtype}.")
+            raise ParseError(dtype, f"Invalid type {dtype}.")
 
         n_dims = 0
 

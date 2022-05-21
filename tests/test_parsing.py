@@ -901,6 +901,20 @@ class TestParser:
 
         assert result == expected
 
+    def test_parse_return_type_declaration(self, mocker):
+        """Test Parser._parse_return_type_declaration."""
+        mocked_return_value = [mocker.Mock(), mocker.Mock()]
+        expected = stmt.ReturnTypeDeclaration(*mocked_return_value)
+
+        lexer = parsing.Parser([])
+        mocker.patch.object(lexer,
+                            "_parse_function_type",
+                            return_value=mocked_return_value)
+
+        result = lexer._parse_return_type_declaration()
+
+        assert result == expected
+
     @pytest.mark.parametrize("token_list,expected", [
         ([
             Token(TokenType.INT, 2, 2, "int"),
@@ -961,7 +975,6 @@ class TestParser:
     def test_parse_function_type(self, token_list):
         """Test Parser._parse_function_type."""
         lexer = parsing.Parser(token_list)
-        lexer._current += 1
 
         with pytest.raises(parsing.ParseError):
             _ = lexer._parse_function_type()
