@@ -1,6 +1,10 @@
 """End-to-end tests involing scanning and parsing."""
+import pytest
+
 from nast import parsing
 from nast import scanner
+
+# pylint: disable=protected-access
 
 
 def test_simple():
@@ -92,3 +96,34 @@ def test_all_blocks():
       rdiff = relative_diff(alpha, beta);
     }
     """
+
+
+@pytest.mark.parametrize("source", [
+    "vector func();", "int func(int a, int b);",
+    "array[] int foobar(array[] int a, int n);"
+])
+def test_parse_function_declaration(source):
+    """End-to-end test for scanning and parsing function declarations."""
+    lexer = scanner.Scanner(source)
+    tokens = lexer.scan_tokens()
+
+    parser = parsing.Parser(tokens)
+
+    _ = parser._parse_function_declaration_or_definition()
+
+
+@pytest.mark.parametrize("source", [
+    """array[] real func_0(real a) {
+            return func_1(a * 3); }
+        }""", """array[] vector func_0(int c, real a) {
+            return func_1(a * 3 + c); }
+        }"""
+])
+def test_parse_function_definition(source):
+    """End-to-end test for scanning and parsing function definitions."""
+    lexer = scanner.Scanner(source)
+    tokens = lexer.scan_tokens()
+
+    parser = parsing.Parser(tokens)
+
+    _ = parser._parse_function_declaration_or_definition()
