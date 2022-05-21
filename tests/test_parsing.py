@@ -901,6 +901,63 @@ class TestParser:
 
         assert result == expected
 
+    def test_parse_function_declaration(self, mocker):
+        """Test Parser._parse_function_declaration_or_definition."""
+
+        identifier = Token(TokenType.IDENTIFIER, 8, 7, "my_func")
+        token_list = [
+            identifier,
+            Token(TokenType.LPAREN, 8, 7, "("),
+            Token(TokenType.RPAREN, 8, 19, ")"),
+            Token(TokenType.SEMICOLON, 8, 20, ";")
+        ]
+        lexer = parsing.Parser(token_list)
+
+        mocked_return_dtype = mocker.Mock()
+        mocker.patch.object(lexer,
+                            "_parse_return_type_declaration",
+                            return_value=mocked_return_dtype)
+        mocked_arguments = mocker.Mock()
+        mocker.patch.object(lexer,
+                            "_parse_function_declaration_arguments",
+                            return_value=mocked_arguments)
+        expected = stmt.FunctionDeclaration(mocked_return_dtype, identifier,
+                                            mocked_arguments)
+
+        result = lexer._parse_function_declaration_or_definition()
+
+        assert result == expected
+
+    def test_parse_function_definition(self, mocker):
+        """Test Parser._parse_function_declaration_or_definition."""
+
+        identifier = Token(TokenType.IDENTIFIER, 8, 7, "my_func")
+        token_list = [
+            identifier,
+            Token(TokenType.LPAREN, 8, 7, "("),
+            Token(TokenType.RPAREN, 8, 19, ")"),
+            Token(TokenType.LBRACE, 8, 19, "{"),
+        ]
+        lexer = parsing.Parser(token_list)
+
+        mocked_return_dtype = mocker.Mock()
+        mocker.patch.object(lexer,
+                            "_parse_return_type_declaration",
+                            return_value=mocked_return_dtype)
+        mocked_arguments = mocker.Mock()
+        mocker.patch.object(lexer,
+                            "_parse_function_declaration_arguments",
+                            return_value=mocked_arguments)
+        mocked_body = mocker.Mock()
+        mocker.patch.object(lexer, "_parse_block", return_value=mocked_body)
+        expected = stmt.FunctionDefinition(
+            stmt.FunctionDeclaration(mocked_return_dtype, identifier,
+                                     mocked_arguments), mocked_body)
+
+        result = lexer._parse_function_declaration_or_definition()
+
+        assert result == expected
+
     @pytest.mark.parametrize("token_list,expected", [
         ([Token(TokenType.RPAREN, 8, 7, ")")], []),
         ([

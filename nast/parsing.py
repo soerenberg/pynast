@@ -1,5 +1,5 @@
 """Stan parser."""
-from typing import Any, Dict, List, Mapping, NamedTuple, Optional, Tuple
+from typing import Any, Dict, List, Mapping, NamedTuple, Optional, Tuple, Union
 
 from nast import expr
 from nast import stmt
@@ -637,6 +637,30 @@ class Parser:
 
         return stmt.Block(declarations, statements)
 
+    def _parse_function_declaration_or_definition(
+            self) -> Union[stmt.FunctionDeclaration, stmt.FunctionDefinition]:
+        """Parse custom function declaration or definition. """
+        return_dtype = self._parse_return_type_declaration()
+
+        identifier = self._consume(TokenType.IDENTIFIER,
+                                   "Expect identifier for function name.")
+
+        self._consume(TokenType.LPAREN, "Expect '(' after function name.")
+
+        args = self._parse_function_declaration_arguments()
+
+        self._consume(TokenType.RPAREN, "Expect ')'.")
+
+        function_declaration = stmt.FunctionDeclaration(
+            return_dtype, identifier, args)
+
+        if self._match(TokenType.SEMICOLON):
+            return function_declaration
+
+        self._consume(TokenType.LBRACE, "Expect '{'.")
+        body = self._parse_block()
+
+        return stmt.FunctionDefinition(header=function_declaration, body=body)
 
     def _parse_function_declaration_arguments(
             self) -> List[stmt.ArgumentDeclaration]:
