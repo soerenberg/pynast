@@ -22,9 +22,12 @@ class Program(Stmt):
 
     # pylint: disable=too-few-public-methods
 
-    def __init__(self, functions: Block, data: Block, transformed_data: Block,
-                 parameters: Block, transformed_parameters: Block,
-                 model: Block, generated_quantities: Block):
+    def __init__(self, functions: Optional[Block], data: Optional[Block],
+                 transformed_data: Optional[Block],
+                 parameters: Optional[Block],
+                 transformed_parameters: Optional[Block],
+                 model: Optional[Block],
+                 generated_quantities: Optional[Block]):
         # pylint: disable=too-many-arguments
         self.functions = functions
         self.data = data
