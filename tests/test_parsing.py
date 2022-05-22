@@ -1149,6 +1149,32 @@ class TestParser:
 
         assert expected == result
 
+    @pytest.mark.parametrize("num_statements", [0, 1, 2, 5])
+    def test_parse_function_block(self, num_statements, mocker):
+        """Test Parser._parse_function_block."""
+        token_list = [Token(TokenType.RBRACE, 1, 1, "}")]
+        mocked_statements = [mocker.Mock() for _ in range(num_statements)]
+        expected = stmt.Block([], mocked_statements)
+
+        lexer = parsing.Parser(token_list)
+        mocker.patch.object(lexer, "_consume")
+        mocker.patch.object(
+            lexer,
+            "_match",
+            side_effect=[False for _ in range(num_statements)] + [True])
+        mocker.patch.object(lexer,
+                            "_parse_function_declaration_or_definition",
+                            side_effect=mocked_statements)
+
+        result = lexer._parse_function_block()
+
+        lexer._consume.assert_has_calls(  # pylint: disable=no-member
+            [
+                mocker.call(TokenType.LBRACE, "Expect '{' after 'functions'."),
+                mocker.call(TokenType.RBRACE, "Expected '}'.")
+            ])
+        assert result == expected
+
     @pytest.mark.parametrize("dtype_tokens,num_expected_declarations", [
         ([], 0),
         ([

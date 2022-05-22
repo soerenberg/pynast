@@ -757,6 +757,15 @@ class Parser:
                                    "Expect argument name.")
         return stmt.ArgumentDeclaration(dtype, n_dims, identifier)
 
+    def _parse_function_block(self) -> stmt.Block:
+        """Parse function block. It is assumed that 'function' is consumed."""
+        self._consume(TokenType.LBRACE, "Expect '{' after 'functions'.")
+        statements = []
+        while not self._match(TokenType.RBRACE):
+            statements.append(self._parse_function_declaration_or_definition())
+
+        return stmt.Block([], statements)
+
     def _parse_var_declaration_no_assign_block(self):
         """Parse program block with variable declarations, no assigns only.
 
