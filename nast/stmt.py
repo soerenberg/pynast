@@ -1,7 +1,7 @@
 """Statement nodes for ASTs."""
 from __future__ import annotations
 import abc
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Sequence
 
 from nast import expr
 from nast import tokens
@@ -340,7 +340,7 @@ class Block(Stmt):
     """
 
     def __init__(self, declarations: List[Declaration],
-                 statements: List[Stmt]):
+                 statements: Sequence[Stmt]):
         self.declarations = declarations
         self.statements = statements
 
