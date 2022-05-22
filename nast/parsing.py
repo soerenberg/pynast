@@ -647,12 +647,9 @@ class Parser:
         while self._match_any(*VAR_TYPES):
             declarations.append(self._parse_declaration())
 
-        statements = [self._parse_statement()]
-
+        statements = []
         while not self._match(TokenType.RBRACE):
             statements.append(self._parse_statement())
-
-        self._consume(TokenType.RBRACE, "Expected '}'.")
 
         return stmt.Block(declarations, statements)
 

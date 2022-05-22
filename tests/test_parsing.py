@@ -891,6 +891,9 @@ class TestParser:
     @pytest.mark.parametrize("token_list,num_declarations,num_statements", [
         ([
             Token(TokenType.RBRACE, 6, 2, "}"),
+        ], 0, 0),
+        ([
+            Token(TokenType.RBRACE, 6, 2, "}"),
         ], 0, 1),
         ([
             Token(TokenType.RBRACE, 6, 2, "}"),
@@ -920,7 +923,7 @@ class TestParser:
         mocker.patch.object(
             lexer,
             "_match",
-            side_effect=[False for _ in range(num_statements - 1)] + [True])
+            side_effect=[False for _ in range(num_statements)] + [True])
 
         result = lexer._parse_block()
         expected = stmt.Block(mocked_declarations, mocked_statements)
