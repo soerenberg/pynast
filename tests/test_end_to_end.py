@@ -17,6 +17,12 @@ def test_simple():
     lexer = scanner.Scanner(code)
     tokens = lexer.scan_tokens()
 
+    parser = parsing.Parser(tokens)
+
+    result = parser.parse_program()
+
+    print(result)
+
 
 def test_simple_normal():
     """Test a simple model sampling from a normal distribution."""
@@ -30,6 +36,10 @@ def test_simple_normal():
         """
     lexer = scanner.Scanner(code)
     tokens = lexer.scan_tokens()
+
+    parser = parsing.Parser(tokens)
+
+    _ = parser.parse_program()
 
 
 def test_eight_schools():
@@ -55,6 +65,10 @@ def test_eight_schools():
         """
     lexer = scanner.Scanner(code)
     tokens = lexer.scan_tokens()
+
+    parser = parsing.Parser(tokens)
+
+    _ = parser.parse_program()
 
 
 def test_all_blocks():
@@ -96,6 +110,62 @@ def test_all_blocks():
       rdiff = relative_diff(alpha, beta);
     }
     """
+
+    lexer = scanner.Scanner(code)
+    tokens = lexer.scan_tokens()
+
+    parser = parsing.Parser(tokens)
+
+    _ = parser.parse_program()
+
+
+def test_dawid_skene():
+    """Test Dawid and Skene model.
+
+    Source: https://mc-stan.org/docs/2_19/stan-users-guide/
+    data-coding-and-diagnostic-accuracy-models.html
+    """
+    code = """data {
+      int<lower=2> K;
+      int<lower=1> I;
+      int<lower=1> J;
+
+      int<lower=1,upper=K> y[I, J];
+
+      vector<lower=0>[K] alpha;
+      vector<lower=0>[K] beta[K];
+    }
+    parameters {
+      simplex[K] pi;
+      simplex[K] theta[J, K];
+    }
+    transformed parameters {
+      vector[K] log_q_z[I];
+      for (i in 1:I) {
+        log_q_z[i] = log(pi);
+        for (j in 1:J)
+          for (k in 1:K)
+            log_q_z[i, k] = log_q_z[i, k]
+                             + log(theta[j, k, y[i, j]]);
+      }
+    }
+    model {
+      pi ~ dirichlet(alpha);
+      for (j in 1:J)
+        for (k in 1:K)
+          theta[j, k] ~ dirichlet(beta[k]);
+
+      for (i in 1:I)
+        target += log_sum_exp(log_q_z[i]);
+    }
+    """
+
+    lexer = scanner.Scanner(code)
+    tokens = lexer.scan_tokens()
+
+    parser = parsing.Parser(tokens)
+
+    _ = parser.parse_program()
 
 
 @pytest.mark.parametrize("source", [
