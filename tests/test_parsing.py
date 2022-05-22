@@ -173,6 +173,23 @@ class TestParser:
         with pytest.raises(parsing.ParseError, match=expected_message):
             _ = lexer._consume(ttype, message)
 
+    def test_parse_parenthesis(self, mocker):
+        """Test parsing Parenthesis in Parser._parse_expression."""
+        token_list = [
+            Token(TokenType.LPAREN, 2, 3, "("),
+            Token(TokenType.RPAREN, 2, 18, ")")
+        ]
+        mocked_expression = mocker.Mock()
+        expected = expr.Parenthesis(mocked_expression)
+        lexer = parsing.Parser(token_list)
+        mocker.patch.object(lexer,
+                            "_parse_expression",
+                            return_value=mocked_expression)
+
+        result = lexer._parse_primary()
+
+        assert result == expected
+
     @pytest.mark.parametrize("ttype,lexeme,left_associative", [
         (TokenType.OR, "||", True),
         (TokenType.AND, "||", True),

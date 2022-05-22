@@ -421,6 +421,11 @@ class Parser:
         if any(self._check(ttype) for ttype in literal_ttypes):
             return expr.Literal(self._pop_token())
 
+        if self._match(TokenType.LPAREN):
+            inner = self._parse_expression()
+            self._consume(TokenType.RPAREN, "Expected ')'.")
+            return expr.Parenthesis(inner)
+
         if self._match(TokenType.IDENTIFIER):
             # TODO handle indexing
             return expr.Variable(self._previous())
