@@ -746,3 +746,20 @@ class Parser:
         identifier = self._consume(TokenType.IDENTIFIER,
                                    "Expect argument name.")
         return stmt.ArgumentDeclaration(dtype, n_dims, identifier)
+
+    def _parse_var_declaration_no_assign_block(self):
+        """Parse program block with variable declarations, no assigns only.
+
+        This is the case for the 'data' and 'parameters' block in stan.
+        It is assumed that 'data' or 'parameters' has already been consumed.
+        """
+        block_name = self._previous().ttype.name
+        self._consume(TokenType.LBRACE, f"Expect '{{' after {block_name}.")
+        declarations = []
+        while not self._match(TokenType.RBRACE):
+            self._consume_any(VAR_TYPES, "Expected type.")
+            declarations.append(
+                self._parse_declaration_no_assign(
+                    f"Assigments not allowed in {block_name} block."))
+
+        return stmt.Block(declarations, [])

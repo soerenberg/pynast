@@ -1118,3 +1118,35 @@ class TestParser:
         result = lexer._parse_argument_declaration()
 
         assert expected == result
+
+    @pytest.mark.parametrize("dtype_tokens,num_expected_declarations", [
+        ([], 0),
+        ([
+            Token(TokenType.INT, 1, 1, "int"),
+            Token(TokenType.REAL, 1, 1, "real")
+        ], 2),
+    ])
+    def test_parse_var_declaration_no_assign_block(self, dtype_tokens,
+                                                   num_expected_declarations,
+                                                   mocker):
+        """Test Parser._parse_var_declaration_no_assign_block."""
+        token_list = [
+            Token(TokenType.FUNCTIONBLOCK, 1, 1, ""),
+            Token(TokenType.LBRACE, 1, 1, "{")
+        ] + dtype_tokens + [
+            Token(TokenType.RBRACE, 1, 1, "}"),
+        ]
+        declarations = [
+            mocker.Mock() for _ in range(num_expected_declarations)
+        ]
+        expected = stmt.Block(declarations, [])
+
+        lexer = parsing.Parser(token_list)
+        lexer._current += 1
+        mocker.patch.object(lexer,
+                            "_parse_declaration_no_assign",
+                            side_effect=declarations)
+
+        result = lexer._parse_var_declaration_no_assign_block()
+
+        assert result == expected
