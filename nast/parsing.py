@@ -773,6 +773,50 @@ class Parser:
                                    "Expect argument name.")
         return stmt.ArgumentDeclaration(dtype, n_dims, identifier)
 
+    def parse_program(self) -> stmt.Program:
+        """Parse stan program."""
+        functions = None
+        data = None
+        transformed_data = None
+        parameters = None
+        transformed_parameters = None
+        model = None
+        generated_quantities = None
+
+        # TODO: distinguish between <top_vardecl_or_statement> and
+        # <vardecl_or_statement> (see Stan BNF grammar).
+        if self._match(TokenType.FUNCTIONBLOCK):
+            functions = self._parse_function_block()
+        if self._match(TokenType.DATABLOCK):
+            data = self._parse_var_declaration_no_assign_block()
+        if self._match(TokenType.TRANSFORMEDDATABLOCK):
+            self._consume(TokenType.LBRACE,
+                          "Expect '{' after 'transformed data'.")
+            transformed_data = self._parse_block()
+        if self._match(TokenType.PARAMETERSBLOCK):
+            parameters = self._parse_var_declaration_no_assign_block()
+        if self._match(TokenType.TRANSFORMEDPARAMETERSBLOCK):
+            self._consume(TokenType.LBRACE,
+                          "Expect '{' after 'transformed parameters'.")
+            transformed_parameters = self._parse_block()
+        if self._match(TokenType.MODELBLOCK):
+            self._consume(TokenType.LBRACE, "Expect '{' after 'model'.")
+            model = self._parse_block()
+        if self._match(TokenType.GENERATEDQUANTITIESBLOCK):
+            self._consume(TokenType.LBRACE,
+                          "Expect '{' after 'generated quantities'.")
+            generated_quantities = self._parse_block()
+
+        return stmt.Program(
+            functions=functions,
+            data=data,
+            transformed_data=transformed_data,
+            parameters=parameters,
+            transformed_parameters=transformed_parameters,
+            model=model,
+            generated_quantities=generated_quantities,
+        )
+
     def _parse_function_block(self) -> stmt.Block:
         """Parse function block. It is assumed that 'function' is consumed."""
         self._consume(TokenType.LBRACE, "Expect '{' after 'functions'.")
