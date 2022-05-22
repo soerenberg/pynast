@@ -560,6 +560,32 @@ class TestParser:
         with pytest.raises(parsing.ParseError):
             _ = lexer._parse_declaration()
 
+    def test_parse_declaration_no_assign(self, mocker):
+        """Test Parser._parse_declaration_no_assign."""
+        lexer = parsing.Parser([])
+        mocked_declaration = mocker.Mock(initializer=None)
+        mocker.patch.object(lexer,
+                            "_parse_declaration",
+                            return_value=mocked_declaration)
+
+        result = lexer._parse_declaration_no_assign(mocker.Mock())
+
+        assert result == mocked_declaration
+
+    def test_parse_declaration_no_assign_raises(self, mocker):
+        """Test that Parser._parse_declaration_no_assign raises ParseError."""
+        lexer = parsing.Parser([])
+        mocked_declaration = stmt.Declaration(mocker.Mock(),
+                                              mocker.Mock(),
+                                              initializer=mocker.Mock())
+        mocker.patch.object(lexer,
+                            "_parse_declaration",
+                            return_value=mocked_declaration)
+        msg = r"test error msg"
+
+        with pytest.raises(parsing.ParseError, match=msg):
+            _ = lexer._parse_declaration_no_assign(msg)
+
     @pytest.mark.parametrize("ttype", [TokenType.INT, TokenType.REAL])
     def test_parse_type_dims_0(self, ttype):
         """Test Parser._parse_type_dims for scalar types."""

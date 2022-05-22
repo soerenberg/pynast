@@ -441,6 +441,25 @@ class Parser:
                                 initializer=initializer,
                                 **var_constraints._asdict())
 
+    def _parse_declaration_no_assign(
+            self, error_msg_if_init: str) -> stmt.Declaration:
+        """Parse variable declaration, do not allow assignment.
+
+        It is assumed that the type has already been consumed in the previous
+        token.
+
+        Args:
+            error_msg_if_init: error message that will be raised as a
+                ParseError if an initializer was given.
+
+        Raises:
+            ParseError: if initializer was given.
+        """
+        declaration = self._parse_declaration()
+        if declaration.initializer is not None:
+            raise ParseError(declaration.identifier, error_msg_if_init)
+        return declaration
+
     def _parse_type_dims(self, ttype: TokenType) -> List[expr.Expr]:
         type_dims = []
         if ttype in ONE_DIM_VAR_TYPES:
