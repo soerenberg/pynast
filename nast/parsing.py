@@ -604,6 +604,17 @@ class Parser:
             self._consume(TokenType.RPAREN, "Expect ')' after condition.")
             body = self._parse_statement()
             return stmt.While(condition, body)
+        if self._match(TokenType.FOR):
+            self._consume(TokenType.LPAREN, "Expect '(' after 'for'.")
+            identifier = self._consume(TokenType.IDENTIFIER,
+                                       "Expect identifier after '('.")
+            self._consume(TokenType.IN, "Expect 'in' after identifier.")
+            begin = self._parse_expression()
+            self._consume(TokenType.COLON, "Expect ':' after expression.")
+            end = self._parse_expression()
+            self._consume(TokenType.RPAREN, "Expect ')'.")
+            body = self._parse_statement()
+            return stmt.For(identifier, begin, end, body)
         if self._match(TokenType.PRINT):
             self._consume(TokenType.LPAREN, "Expect '(' after 'print'.")
             expressions = [self._parse_expression()]

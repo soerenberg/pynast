@@ -872,6 +872,28 @@ class TestParser:
                  expr.Literal(
                      Token(TokenType.INTNUMERAL, 2, 18, "1", RealValue(1)))))),
         ([
+            Token(TokenType.FOR, 3, 5, "for"),
+            Token(TokenType.LPAREN, 1, 8, "("),
+            Token(TokenType.IDENTIFIER, 1, 11, "var_0"),
+            Token(TokenType.IN, 1, 17, "in"),
+            Token(TokenType.IDENTIFIER, 2, 3, "var_1"),
+            Token(TokenType.COLON, 1, 17, ":"),
+            Token(TokenType.IDENTIFIER, 2, 3, "var_2"),
+            Token(TokenType.RPAREN, 2, 8, ")"),
+            Token(TokenType.PRINT, 2, 14, "print"),
+            Token(TokenType.LPAREN, 2, 20, "("),
+            Token(TokenType.IDENTIFIER, 1, 11, "var_0"),
+            Token(TokenType.RPAREN, 2, 21, ")"),
+            Token(TokenType.SEMICOLON, 2, 22, ";")
+        ],
+         stmt.For(
+             Token(TokenType.IDENTIFIER, 1, 11, "var_0"),
+             expr.Variable(Token(TokenType.IDENTIFIER, 2, 3, "var_1")),
+             expr.Variable(Token(TokenType.IDENTIFIER, 2, 3, "var_2")),
+             stmt.Print([
+                 expr.Variable(Token(TokenType.IDENTIFIER, 1, 11, "var_0"))
+             ]))),
+        ([
             Token(TokenType.PRINT, 3, 5, "print"),
             Token(TokenType.LPAREN, 1, 8, "("),
             Token(TokenType.IDENTIFIER, 1, 11, "var_0"),
