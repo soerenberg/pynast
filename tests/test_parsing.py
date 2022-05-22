@@ -1185,11 +1185,8 @@ class TestParser:
 
         result = lexer._parse_function_block()
 
-        lexer._consume.assert_has_calls(  # pylint: disable=no-member
-            [
-                mocker.call(TokenType.LBRACE, "Expect '{' after 'functions'."),
-                mocker.call(TokenType.RBRACE, "Expected '}'.")
-            ])
+        lexer._consume.assert_called_once_with(  # pylint: disable=no-member
+            TokenType.LBRACE, "Expect '{' after 'functions'.")
         assert result == expected
 
     @pytest.mark.parametrize("dtype_tokens,num_expected_declarations", [
