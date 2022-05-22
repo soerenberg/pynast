@@ -355,20 +355,33 @@ class Parser:
         return expression
 
     def _complete_function_application(
-            self, callee: expr.Expr) -> expr.FunctionApplication:
+        self, callee: expr.Expr
+    ) -> Union[expr.FunctionApplication, expr.FunctionConditionalApplication]:
         """Finish parsing FunctionApplication.
 
         At this point it is assumed that callee and opening parenthesis have
         been consumed.
         """
         arguments = []
+        outcome = None  # for conditional calls, e.g. `normal_pdf(x |a,b);'
         if not self._check(TokenType.RPAREN):
             arguments.append(self._parse_expression())
+
+            if self._match(TokenType.BAR):
+                outcome = arguments[0]
+                arguments = []
+
+                if not self._check(TokenType.RPAREN):
+                    arguments.append(self._parse_expression())
 
             while self._match(TokenType.COMMA):
                 arguments.append(self._parse_expression())
 
         paren = self._consume(TokenType.RPAREN, "Expect ')' after arguments.")
+
+        if outcome is not None:
+            return expr.FunctionConditionalApplication(callee, outcome,
+                                                       arguments)
 
         return expr.FunctionApplication(callee, paren, arguments)
 

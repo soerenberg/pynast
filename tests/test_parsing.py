@@ -288,6 +288,33 @@ class TestParser:
 
         assert result == expected
 
+    def test_parse_function_conditional_application(self):
+        """Test parsing function call of the form Identifier(arg0,arg1)."""
+        token_list = [
+            Token(TokenType.IDENTIFIER, 5, 2, "my_func"),
+            Token(TokenType.LPAREN, 5, 10, "("),
+            Token(TokenType.IDENTIFIER, 5, 16, "var_0"),
+            Token(TokenType.BAR, 5, 23, "|"),
+            Token(TokenType.IDENTIFIER, 5, 28, "var_1"),
+            Token(TokenType.COMMA, 5, 32, ","),
+            Token(TokenType.IDENTIFIER, 5, 34, "var_2"),
+            Token(TokenType.RPAREN, 5, 40, ")"),
+        ]
+
+        expected = expr.FunctionConditionalApplication(
+            callee=expr.Variable(Token(TokenType.IDENTIFIER, 5, 2, "my_func")),
+            outcome=expr.Variable(Token(TokenType.IDENTIFIER, 5, 16, "var_0")),
+            parameters=[
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 28, "var_1")),
+                expr.Variable(Token(TokenType.IDENTIFIER, 5, 34, "var_2"))
+            ])
+
+        lexer = parsing.Parser(token_list)
+
+        result = lexer._parse_precedence_0()
+
+        assert result == expected
+
     def test_parse_indexing(self):
         """Test parsing indexing of the form <identifier>[a,b][c,d:e]."""
         token_list = [
