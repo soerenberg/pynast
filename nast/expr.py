@@ -33,6 +33,20 @@ class Literal(Expr):
         return isinstance(other, Literal) and self.token == other.token
 
 
+class Parenthesis(Expr):
+    """Expression inside parentheses."""
+
+    def __init__(self, inner: Expr):
+        super().__init__()
+        self.inner = inner
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_parenthesis(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, Parenthesis) and self.inner == other.inner)
+
+
 class Unary(Expr):
     """Unary operation with one operator and one expression."""
 
@@ -191,6 +205,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_literal(self, expression: Literal) -> Any:
         """Visit Literal."""
+
+    @abc.abstractmethod
+    def visit_parenthesis(self, expression: Parenthesis) -> Any:
+        """Visit Parenthesis."""
 
     @abc.abstractmethod
     def visit_unary(self, expression: Unary) -> Any:
