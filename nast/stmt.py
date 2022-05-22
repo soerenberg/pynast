@@ -294,6 +294,25 @@ class While(Stmt):
                 and self.body == other.body)
 
 
+class For(Stmt):
+    """for statement."""
+
+    def __init__(self, identifier: tokens.Token, begin: expr.Expr,
+                 end: expr.Expr, body: Stmt):
+        self.identifier = identifier
+        self.begin = begin
+        self.end = end
+        self.body = body
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_for(self)
+
+    def __eq__(self, other):
+        return (isinstance(other, For) and self.identifier == other.identifier
+                and self.begin == other.begin and self.end == other.end
+                and self.body == other.body)
+
+
 class Print(Stmt):
     """print statement."""
 
@@ -423,6 +442,10 @@ class Visitor:
     @abc.abstractmethod
     def visit_while(self, statement: While) -> Any:
         """Visit While."""
+
+    @abc.abstractmethod
+    def visit_for(self, statement: For) -> Any:
+        """Visit For."""
 
     @abc.abstractmethod
     def visit_print(self, statement: Print) -> Any:
