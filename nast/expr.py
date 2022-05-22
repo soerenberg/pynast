@@ -117,6 +117,24 @@ class FunctionApplication(Expr):
                 and self.arguments == other.arguments)
 
 
+class FunctionConditionalApplication(Expr):
+    """Function application in conditional syntax (with vertical bar)."""
+
+    def __init__(self, callee: Expr, outcome: Expr, parameters: List[Expr]):
+        self.callee = callee
+        self.outcome = outcome
+        self.parameters = parameters
+
+    def accept(self, visitor: Visitor) -> Any:
+        return visitor.visit_function_conditional_application(self)
+
+    def __eq__(self, other) -> bool:
+        return (isinstance(other, FunctionConditionalApplication)
+                and self.callee == other.callee
+                and self.outcome == other.outcome
+                and self.parameters == other.parameters)
+
+
 class Indexing(Expr):
     """Array or matrix indexing."""
 
@@ -190,6 +208,11 @@ class Visitor:
     def visit_function_application(self,
                                    expression: FunctionApplication) -> Any:
         """Visit FunctionApplication."""
+
+    @abc.abstractmethod
+    def visit_function_conditional_application(
+            self, expression: FunctionConditionalApplication) -> Any:
+        """Visit FunctionConditionalApplication."""
 
     @abc.abstractmethod
     def visit_indexing(self, expression: Indexing) -> Any:
