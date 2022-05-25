@@ -33,6 +33,12 @@ BASIC_TYPES = [
     TokenType.MATRIX,
 ]
 
+# Types that can have literal values in the code
+LITERAL_TYPES = [
+    TokenType.STRING, TokenType.INTNUMERAL, TokenType.REALNUMERAL,
+    TokenType.IMAGNUMERAL
+]
+
 RETURN_TYPE_TTYPES = [TokenType.VOID, TokenType.ARRAY] + BASIC_TYPES
 
 # Data types that with two dimensions
@@ -413,12 +419,7 @@ class Parser:
         return expression
 
     def _parse_primary(self) -> expr.Expr:
-        # TODO only literals can parsed atm. False, True etc. missing.
-        literal_ttypes = [
-            TokenType.STRING, TokenType.INTNUMERAL, TokenType.REALNUMERAL,
-            TokenType.IMAGNUMERAL
-        ]
-        if any(self._check(ttype) for ttype in literal_ttypes):
+        if self._check_any(*LITERAL_TYPES):
             return expr.Literal(self._pop_token())
 
         if self._match(TokenType.LPAREN):
@@ -427,7 +428,6 @@ class Parser:
             return expr.Parenthesis(inner)
 
         if self._match(TokenType.IDENTIFIER):
-            # TODO handle indexing
             return expr.Variable(self._previous())
 
         raise ParseError(self._get_current(), "")
