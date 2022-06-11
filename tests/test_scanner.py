@@ -1,8 +1,8 @@
 """Tests for scanner.py module."""
 import pytest
 
-from nast import scanner
-from nast.tokens import Token, TokenType, ComplexValue, RealValue
+from nast.core import scanner
+from nast.core.tokens import Token, TokenType, ComplexValue, RealValue
 
 # pylint: disable=no-self-use, protected-access, too-few-public-methods
 

@@ -1,9 +1,9 @@
 """Functional tests for parsing.py module."""
 import itertools
 
-from nast import expr
-from nast import parsing
-from nast.tokens import Token, TokenType
+from nast.core import expr
+from nast.core import parsing
+from nast.core.tokens import Token, TokenType
 
 # pylint: disable=no-self-use, protected-access, too-few-public-methods
 

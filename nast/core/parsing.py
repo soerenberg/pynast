@@ -1,9 +1,9 @@
 """Stan parser."""
 from typing import Any, Dict, List, Mapping, NamedTuple, Optional, Tuple, Union
 
-from nast import expr
-from nast import stmt
-from nast.tokens import Token, TokenType
+from nast.core import expr
+from nast.core import stmt
+from nast.core.tokens import Token, TokenType
 
 # Data types that with no dimensions
 SCALAR_VAR_TYPES = [

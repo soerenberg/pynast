@@ -1,8 +1,8 @@
 """Scan stan code."""
 from typing import Any, List
 
-from nast import error
-from nast.tokens import Token, TokenType, ComplexValue, RealValue
+from nast.core import error
+from nast.core.tokens import Token, TokenType, ComplexValue, RealValue
 
 # Reserved keywords mapped to corresponding token type
 STAN_KEYWORDS = {

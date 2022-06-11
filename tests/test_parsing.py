@@ -1,10 +1,10 @@
 """Tests for parsing module."""
 import pytest
 
-from nast import expr
-from nast import parsing
-from nast import stmt
-from nast.tokens import RealValue, Token, TokenType
+from nast.core import expr
+from nast.core import parsing
+from nast.core import stmt
+from nast.core.tokens import RealValue, Token, TokenType
 
 
 class TestParser:

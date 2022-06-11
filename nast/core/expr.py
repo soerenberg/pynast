@@ -4,7 +4,7 @@ from __future__ import annotations
 import abc
 from typing import Any, List
 
-from nast import tokens
+from nast.core import tokens
 
 
 class Expr:

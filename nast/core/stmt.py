@@ -3,8 +3,8 @@ from __future__ import annotations
 import abc
 from typing import Any, List, Optional, Sequence
 
-from nast import expr
-from nast import tokens
+from nast.core import expr
+from nast.core import tokens
 
 
 class Stmt:

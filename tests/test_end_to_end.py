@@ -1,8 +1,8 @@
 """End-to-end tests involing scanning and parsing."""
 import pytest
 
-from nast import parsing
-from nast import scanner
+from nast.core import parsing
+from nast.core import scanner
 
 # pylint: disable=protected-access
 
