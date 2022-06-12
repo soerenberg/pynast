@@ -18,6 +18,38 @@ class TestParser:
         lexer = parsing.Parser(mocker.MagicMock())
         yield lexer
 
+    def test_parse_any_statement_calls_parse_declaration(self, lexer, mocker):
+        """Test that parse_any_statement calls _parse_declaration."""
+        mocker.patch.object(lexer, "_match_any", return_value=True)
+        mocker.patch.object(lexer, "_parse_declaration")
+
+        lexer.parse_any_statement()
+
+        lexer._parse_declaration.assert_called_once_with()
+
+    def test_parse_any_statement_calls_parse_function(self, lexer, mocker):
+        """Test _parse_function_declaration_or_definition gets called."""
+        mocker.patch.object(lexer, "_match_any", return_value=True)
+        mocker.patch.object(lexer,
+                            "_parse_declaration",
+                            side_effect=parsing.ParseError(
+                                mocker.Mock(), mocker.Mock()))
+        mocker.patch.object(lexer, "_parse_function_declaration_or_definition")
+
+        lexer.parse_any_statement()
+
+        (lexer._parse_function_declaration_or_definition.
+         assert_called_once_with())
+
+    def test_parse_any_statement_calls_parse_statement(self, lexer, mocker):
+        """Test that parse_any_statement calls _parse_statement."""
+        mocker.patch.object(lexer, "_match_any", return_value=False)
+        mocker.patch.object(lexer, "_parse_statement")
+
+        lexer.parse_any_statement()
+
+        lexer._parse_statement.assert_called_once_with()
+
     @pytest.mark.parametrize("current,expected", [(0, 1), (10, 11), (25, 26)])
     def test_pop_token_increments(self, lexer, current, expected, mocker):
         """Test that _pop_token increases _current if not _is_at_end = True."""

@@ -108,6 +108,21 @@ class Parser:
         """Run parser."""
         raise NotImplementedError
 
+    def parse_any_statement(self) -> stmt.Stmt:
+        """Parses an arbitary statement.
+
+        This function is not intended to be used for parsing actual Stan
+        programs, but for secondary applications like REPLs where we might want
+        to allow the user to enter any statement.
+        """
+        if self._match_any(*VAR_TYPES):
+            try:
+                return self._parse_declaration()
+            except ParseError:
+                return self._parse_function_declaration_or_definition()
+
+        return self._parse_statement()
+
     def _pop_token(self):
         token = self._peek()
 
