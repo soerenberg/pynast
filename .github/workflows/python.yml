@@ -32,4 +32,4 @@ jobs:
       - name: Run tests
         run: |
           poetry run python -m pytest
-          poetry run python -m pytest --cov=<project-dir> --cov-report=term
+          poetry run python -m pytest --cov=nast --cov-report=term
