@@ -31,7 +31,5 @@ jobs:
         run: poetry install --no-interaction --no-root
       - name: Run tests
         run: |
-          poetry shell
-          python -m pytest
-          coverage report
-          python -m pytest --cov=<project-dir> --cov-report=xml
+          poetry run python -m pytest
+          poetry run python -m pytest --cov=<project-dir> --cov-report=term
