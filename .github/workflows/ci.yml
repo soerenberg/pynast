@@ -1,4 +1,4 @@
-name: python tests
+name: ci
 on:
   push:
     branches: ['main']
@@ -32,4 +32,6 @@ jobs:
       - name: Run tests
         run: |
           poetry run python -m pytest
+      - name: Run coverage report
+        run: |
           poetry run python -m pytest --cov=nast --cov-report=term
